@@ -1,0 +1,21 @@
+- `[x]` T01: Setup Infraestructura
+  - `[x]` Crear carpeta `motor-web` (Next.js)
+  - `[x]` Crear carpeta `render-service` (Express/Puppeteer)
+  - `[x]` Configurar `lib/supabase.ts` en `motor-web`
+- `[x]` T03: Pantalla Cero (Selector de Marca)
+  - `[x]` UI de login/selector
+  - `[x]` Leer marcas (tenant_id) de Supabase
+- `[x]` T04: Onboarding e Inferencia Simulada
+  - `[x]` UI de onboarding (animación de carga simulada S1)
+  - `[x]` Pantalla que muestra "La Bóveda" extraída
+- `[x]` T06: Servicio Puppeteer de Render
+  - `[x]` Instalar Puppeteer en `render-service`
+  - `[x]` Endpoint POST que recibe `RenderJob` y devuelve PNG
+- `[x]` T06.5: Pipeline Runner (Orquestador y UI Chat)
+  - `[x]` Pantalla de chat del Ejecutivo de Cuentas (S3)
+  - `[x]` Animación de carga secuencial de generación (S4)
+  - `[x]` Conexión del orquestador backend con validación Zod
+- `[x]` T09: Mockup de Instagram y Aprendizaje
+  - `[x]` Pantalla de feed de Instagram (S5)
+  - `[x]` Modal de "Pedir Cambios" para guardar notas
+  - `[x]` Botón de "Aprobar" y registro en Supabase (T10)

@@ -1,0 +1,83 @@
+{
+  "veterinaria": {
+    "vertical": "veterinaria",
+    "concepto_visual": "El animal ES el protagonista. Foto de mascota recortada, mirando a cámara, que invade el texto. Emocional, cálido, cercano. Verde/vida como color de fondo dominante.",
+    "layout_preferido": "foto de mascota recortada dominante (ocupa 50-70%), texto grande superpuesto en bloque de color, invasión foto-sobre-texto",
+    "jerarquia": ["foto mascota", "titulo emocional grande", "subtitulo beneficio", "cta suave"],
+    "densidad_texto": "media-baja: 3-6 palabras clave grandes, resto chico",
+    "tipografia_estilo": "sans redondeada, gorda, con peso (bold/black). Mezcla de tamaños dramática dentro del titulo",
+    "recursos_graficos": ["huellas de fondo tono sobre tono", "highlight de color detras de palabras clave", "formas organicas curvas"],
+    "templates_recomendados": ["foto_recortada_bloque", "highlight_palabras"],
+    "do": [
+      "foto de mascota feliz, mirando a camara, recortada del fondo",
+      "una palabra clave gigante que domine (ej: CASTRAR, VACUNAS)",
+      "highlight de color detras de palabras que importan",
+      "fondo de color vivo (verde vida) o crema calido",
+      "huellas o iconos suaves tono sobre tono de fondo",
+      "tono empatico, apela al amor por la mascota"
+    ],
+    "anti_patterns": [
+      "fotos de instrumental medico o clinico frio",
+      "imagenes sensibles o de animales enfermos",
+      "lenguaje medico complejo o tecnicismos",
+      "stock generico de veterinario con guardapolvo",
+      "layout tipo folleto de farmacia",
+      "saturar de texto informativo",
+      "fondos blancos vacios y frios"
+    ]
+  },
+  "inmobiliaria": {
+    "vertical": "inmobiliaria",
+    "concepto_visual": "Aspiracional y editorial. La foto del espacio respira, mucho aire negativo. El lujo se comunica con RESTRICCION, no con saturacion. Serif fina, tono revista de arquitectura.",
+    "layout_preferido": "foto arquitectonica amplia dominante, texto minimo con mucho aire, o split vertical foto/texto. Datos clave en iconos discretos abajo",
+    "jerarquia": ["foto espacio/vista", "nombre propiedad o lugar (serif grande)", "descripcion breve evocativa", "datos tecnicos en iconos discretos"],
+    "densidad_texto": "muy baja: deja respirar. El vacio ES el mensaje de lujo",
+    "tipografia_estilo": "serif elegante y fina (display), tracking amplio en mayusculas, minusculas para descripcion. Nada de bold agresivo",
+    "recursos_graficos": ["linea divisoria fina dorada punteada", "iconos de linea finos para amenities", "paleta desaturada, casi monocromatica"],
+    "templates_recomendados": ["foto_full_texto_minimo", "split_editorial", "datos_iconos_linea"],
+    "do": [
+      "foto amplia del espacio o vista, protagonista, bien iluminada",
+      "muchisimo aire negativo alrededor del texto",
+      "serif fina y elegante, tracking amplio en titulos",
+      "paleta sobria: neutros, crema, negro, un dorado de acento",
+      "datos (m2, ambientes) en iconos de linea finos y discretos",
+      "tono editorial de revista de arquitectura"
+    ],
+    "anti_patterns": [
+      "signos de exclamacion o urgencia (OFERTA!, ULTIMO!)",
+      "saturar de texto o datos",
+      "colores chillones o multiples acentos",
+      "lenguaje informal o jerga comercial",
+      "collage de varias fotos chicas",
+      "bordes redondeados exagerados o stickers",
+      "fuentes sans genericas gordas"
+    ]
+  },
+  "crochet": {
+    "vertical": "crochet",
+    "concepto_visual": "Artesanal y calido. El producto tejido en primer plano, se ve la textura del hilo. Handmade, cercano, tono tierra/pastel sobre fondo crema. Tipografia manuscrita/redondeada que se siente hecha a mano.",
+    "layout_preferido": "producto tejido en primer plano sobre fondo neutro crema, texto manuscrito grande, mucho foco en la textura del objeto",
+    "jerarquia": ["foto producto tejido (textura visible)", "titulo manuscrito/redondeado", "detalle o call cercano", "cta suave sin presion"],
+    "densidad_texto": "baja: pocas palabras, calidas, tono conversacional",
+    "tipografia_estilo": "manuscrita, redondeada o display gorda con caracter handmade. Se siente hecha a mano, no corporativa",
+    "recursos_graficos": ["fondo crema o neutro calido", "textura de hilo visible en el producto", "formas organicas suaves", "paleta tierra/pastel"],
+    "templates_recomendados": ["producto_centrado_crema", "titulo_manuscrito"],
+    "do": [
+      "producto tejido en primer plano, textura del hilo bien visible",
+      "fondo crema, neutro calido o tono tierra",
+      "tipografia manuscrita o redondeada con caracter hecho a mano",
+      "paleta calida: mostaza, terracota, oliva, crema",
+      "tono cercano, artesanal, celebra lo hecho a mano",
+      "luz natural suave sobre el producto"
+    ],
+    "anti_patterns": [
+      "palabras de produccion industrial o masiva",
+      "venta dura o presion (COMPRA YA, oferta limitada)",
+      "fondos saturados o colores estridentes",
+      "tipografia corporativa fria (sans generica)",
+      "stock generico que no muestre el tejido real",
+      "layout tipo ecommerce con precio gritado",
+      "fotos oscuras o mal iluminadas que oculten la textura"
+    ]
+  }
+}

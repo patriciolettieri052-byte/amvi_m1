@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  /* TEMPLATE: foto_recortada_bloque — veterinaria / emocional
+     Variables esperadas (reemplazar {{...}}):
+     {{BG}} {{TEXT_COLOR}} {{ACCENT}} {{FONT}} {{TITULO}} {{SUBTITULO}} {{CTA}} {{FOTO_URL}} {{LOGO_URL}} */
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { width:1080px; height:1080px; overflow:hidden; }
+  .canvas {
+    width:1080px; height:1080px; position:relative;
+    background:{{BG}};
+    font-family:'{{FONT}}', sans-serif;
+    display:flex; flex-direction:column; justify-content:flex-end;
+  }
+  .paws { position:absolute; inset:0; opacity:0.07; font-size:120px;
+    color:{{TEXT_COLOR}}; line-height:1.6; padding:40px; }
+  .logo { position:absolute; top:50px; left:50%; transform:translateX(-50%);
+    height:60px; z-index:5; }
+  .foto { position:absolute; top:0; left:50%; transform:translateX(-50%);
+    height:620px; z-index:3; object-fit:contain; }
+  .block {
+    position:relative; z-index:4; background:{{ACCENT}};
+    margin:0 0 90px 0; padding:60px 70px; border-radius:0 40px 40px 0;
+    width:88%;
+  }
+  .titulo { font-size:96px; font-weight:900; line-height:0.98;
+    color:{{TEXT_COLOR}}; text-transform:uppercase; letter-spacing:-1px; }
+  .subtitulo { font-size:38px; font-weight:700; color:{{TEXT_COLOR}};
+    margin-top:18px; opacity:0.9; }
+  .cta { display:inline-block; margin-top:30px; background:{{TEXT_COLOR}};
+    color:{{BG}}; font-size:30px; font-weight:700; padding:16px 40px;
+    border-radius:50px; }
+</style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="paws">🐾&nbsp;&nbsp;&nbsp;🐾&nbsp;&nbsp;&nbsp;🐾<br>&nbsp;&nbsp;🐾&nbsp;&nbsp;&nbsp;🐾<br>🐾&nbsp;&nbsp;&nbsp;🐾&nbsp;&nbsp;&nbsp;🐾</div>
+    <img class="logo" src="{{LOGO_URL}}" />
+    <img class="foto" src="{{FOTO_URL}}" />
+    <div class="block">
+      <div class="titulo">{{TITULO}}</div>
+      <div class="subtitulo">{{SUBTITULO}}</div>
+      <div class="cta">{{CTA}}</div>
+    </div>
+  </div>
+</body>
+</html>

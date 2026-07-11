@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMVI M1 · Interfaz real</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@400;700;900&family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#F5F5F5;--surface:#FFFFFF;--ink:#1A1A1A;--muted:#6B6B6B;--line:#E8E8E8;
+    --coral:#E94560;--green:#00A650;--radius:16px;--shadow:0 2px 12px rgba(0,0,0,.07)}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{font-family:'Quicksand',sans-serif;background:#DADADA;color:var(--ink);
+    display:flex;flex-direction:column;align-items:center;padding:20px 12px;min-height:100vh}
+  .intro{max-width:400px;text-align:center;margin-bottom:16px}
+  .intro h1{font-size:19px;font-weight:700}
+  .intro p{font-size:12.5px;color:#555;margin-top:3px}
+  .intro .tag{display:inline-block;background:#1A1A1A;color:#fff;font-size:10px;font-weight:600;
+    padding:3px 10px;border-radius:20px;margin-top:8px}
+  .phone{width:390px;max-width:100%;height:810px;background:var(--bg);border-radius:38px;
+    box-shadow:0 20px 55px rgba(0,0,0,.3);overflow:hidden;position:relative;border:10px solid #111}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:135px;height:26px;
+    background:#111;border-radius:0 0 18px 18px;z-index:60}
+  .screen{position:absolute;inset:0;display:none;flex-direction:column;overflow-y:auto;padding-bottom:64px}
+  .screen.active{display:flex}
+  .screen::-webkit-scrollbar{display:none}
+  .screen.nonav{padding-bottom:0}
+  .topbar{display:flex;align-items:center;gap:10px;padding:38px 18px 13px;background:var(--surface);
+    border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+  .topbar .logo{font-weight:700;font-size:17px}.topbar .logo b{color:var(--coral)}
+  .topbar .spacer{flex:1}
+  .brandchip{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600}
+  .brandchip .av{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;
+    justify-content:center;color:#fff;font-size:9px;font-weight:700}
+  .back{font-size:22px;font-weight:700;cursor:pointer;width:26px;line-height:1}
+  .body{padding:22px 18px 30px;flex:1}
+  h2.t{font-size:23px;font-weight:700;line-height:1.15;margin-bottom:6px}
+  p.s{font-size:13.5px;color:var(--muted);line-height:1.5;margin-bottom:22px}
+  .btn{width:100%;background:var(--ink);color:#fff;border:none;border-radius:12px;padding:15px;
+    font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:transform .08s}
+  .btn:active{transform:scale(.98)}
+  .btn.green{background:var(--green)}.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+  .btn-row{display:flex;gap:10px}.btn-row .btn{flex:1}
+  .input{width:100%;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;
+    padding:13px 14px;font-family:inherit;font-size:14px;font-weight:500}
+  .input:focus{outline:none;border-color:var(--coral)}
+  #s-login .body{display:flex;flex-direction:column;justify-content:center}
+  .login-logo{text-align:center;font-size:34px;font-weight:700;margin-bottom:4px}
+  .login-logo b{color:var(--coral)}
+  .login-sub{text-align:center;font-size:13px;color:var(--muted);margin-bottom:28px}
+  .brand-pick{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;
+    padding:14px;display:flex;align-items:center;gap:13px;margin-bottom:11px;cursor:pointer;transition:border-color .15s}
+  .brand-pick:active{border-color:var(--coral)}
+  .brand-pick .av{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;
+    justify-content:center;color:#fff;font-weight:700;font-size:14px;flex-shrink:0}
+  .brand-pick .nm{font-size:15px;font-weight:700}.brand-pick .rb{font-size:11.5px;color:var(--muted)}
+  .brand-pick .go{margin-left:auto;color:var(--muted);font-weight:700}
+  .fakelog{margin-top:20px;padding-top:18px;border-top:1px solid var(--line);text-align:center}
+  .fakelog .input{margin-bottom:9px}
+  .hint{font-size:11px;color:var(--muted);text-align:center;margin-top:6px}
+  .analyze{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;gap:22px}
+  .pulse{width:82px;height:82px;border-radius:50%;position:relative;display:flex;align-items:center;
+    justify-content:center;color:#fff;font-size:28px;font-weight:700}
+  .pulse::before{content:'';position:absolute;inset:0;border-radius:50%;border:2px solid currentColor;animation:ring 1.6s ease-out infinite}
+  @keyframes ring{0%{transform:scale(1);opacity:.5}100%{transform:scale(2);opacity:0}}
+  .astep{font-size:15px;font-weight:600;min-height:22px}.asmall{font-size:12px;color:var(--muted)}
+  .inferred{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;
+    color:var(--green);background:#E6F6EC;padding:4px 10px;border-radius:20px;margin-bottom:14px}
+  .bcard{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:17px;margin-bottom:13px}
+  .brow{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .brow:last-child{margin-bottom:0}
+  .bk{font-size:12px;color:var(--muted);font-weight:600}
+  .sw{display:flex;gap:7px}.sw i{width:30px;height:30px;border-radius:8px;border:1px solid rgba(0,0,0,.08)}
+  .chip{display:inline-block;background:#F0F0F0;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;margin:0 5px 5px 0}
+  .lb{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px}
+  .msg{max-width:82%;padding:11px 14px;border-radius:16px;font-size:13.5px;font-weight:500;line-height:1.45;margin-bottom:10px}
+  .msg.ai{background:var(--surface);box-shadow:var(--shadow);border-bottom-left-radius:4px}
+  .msg.me{background:var(--ink);color:#fff;margin-left:auto;border-bottom-right-radius:4px}
+  .composer{position:sticky;bottom:0;background:var(--bg);padding:12px 0 4px;display:flex;gap:8px}
+  .composer input{flex:1;background:var(--surface);border:1.5px solid var(--line);border-radius:24px;padding:12px 16px;font-family:inherit;font-size:13.5px}
+  .composer input:focus{outline:none;border-color:var(--coral)}
+  .composer button{background:var(--coral);color:#fff;border:none;width:44px;border-radius:50%;font-size:17px;cursor:pointer;flex-shrink:0}
+  .gen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;gap:18px}
+  .genbar{width:100%;height:7px;background:var(--line);border-radius:10px;overflow:hidden}
+  .genbar i{display:block;height:100%;width:0;background:var(--coral);transition:width .4s}
+  .genstep{font-size:14px;font-weight:600;min-height:20px}
+  .ig{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:15px}
+  .ig-head{display:flex;align-items:center;gap:9px;padding:11px 13px}
+  .ig-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:11px}
+  .ig-nm{font-size:13px;font-weight:700}.ig-nm span{display:block;font-size:10px;font-weight:500;color:var(--muted)}
+  .ig-dots{margin-left:auto;font-weight:700;color:var(--muted)}
+  .ig-canvas{aspect-ratio:1;position:relative;overflow:hidden}
+  .ig-acts{display:flex;gap:14px;padding:10px 13px 4px;font-size:19px}
+  .ig-cap{padding:2px 13px 14px;font-size:12.5px;line-height:1.5}
+  .ig-cap b{font-weight:700}.ig-cap .tg{color:#385898;font-weight:600}
+  .p-vet{width:100%;height:100%;position:relative;font-family:'Nunito';display:flex;flex-direction:column;justify-content:flex-end}
+  .p-vet .ph{position:absolute;top:5%;right:-3%;width:60%;z-index:2}
+  .p-vet .blk{position:relative;z-index:3;margin-bottom:13%;padding:7% 8%;border-radius:0 18px 18px 0;width:84%}
+  .p-vet .ti{font-size:28px;font-weight:900;line-height:.95;text-transform:uppercase}
+  .p-vet .su{font-size:12.5px;font-weight:700;margin-top:5px;opacity:.92}
+  .p-vet .hl{padding:0 6px;border-radius:4px}
+  .p-inmo{width:100%;height:100%;position:relative;font-family:'Cormorant Garamond';display:flex;flex-direction:column}
+  .p-inmo .ph{width:100%;height:60%;object-fit:cover;filter:saturate(.85)}
+  .p-inmo .ct{padding:9% 9% 0;position:relative;flex:1}
+  .p-inmo .dv{width:60px;height:1px;border-top:1px dotted;margin-bottom:16px}
+  .p-inmo .ti{font-size:34px;font-weight:400;line-height:.95;text-transform:uppercase;letter-spacing:5px}
+  .p-inmo .su{font-size:14px;font-weight:300;margin-top:14px;opacity:.75;letter-spacing:1px;max-width:80%;line-height:1.4}
+  .p-inmo .cta{position:absolute;bottom:9%;right:9%;font-size:11px;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid;padding-bottom:4px}
+  .p-croc{width:100%;height:100%;position:relative;font-family:'Quicksand';display:flex;flex-direction:column;align-items:center;padding:9% 8%}
+  .p-croc .lg{font-size:13px;font-weight:700;margin-bottom:3%}
+  .p-croc .ti{font-size:30px;font-weight:700;text-align:center;line-height:1;margin-bottom:2%}
+  .p-croc .su{font-size:13px;font-weight:500;text-align:center;margin-bottom:5%}
+  .p-croc .ph{flex:1;max-width:64%;object-fit:contain;border-radius:14px}
+  .p-croc .cta{margin-top:5%;font-size:13px;font-weight:700;padding:9px 24px;border-radius:40px}
+  .navbar{position:absolute;bottom:0;left:0;right:0;height:60px;background:var(--surface);
+    border-top:1px solid var(--line);display:flex;z-index:40}
+  .navbar button{flex:1;background:none;border:none;font-family:inherit;font-size:10px;font-weight:600;
+    color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer}
+  .navbar button.on{color:var(--coral)}.navbar .ic{font-size:18px}
+  .toast{position:absolute;bottom:74px;left:18px;right:18px;background:#1A1A1A;color:#fff;border-radius:12px;
+    padding:13px;font-size:13px;font-weight:600;text-align:center;opacity:0;transition:.3s;z-index:50;pointer-events:none}
+  .toast.show{opacity:1}
+  .map{max-width:400px;margin-top:16px;font-size:11px;color:#555;text-align:center;line-height:1.6}
+  .map b{color:#1a1a1a}
+  @media(max-width:430px){.phone{height:87vh}}
+</style>
+</head>
+<body>
+<div class="intro">
+  <h1>AMVI · M1 — Interfaz real</h1>
+  <p>Fiel a los tickets. Las 3 marcas funcionan. Tocá una y recorré el flujo.</p>
+  <span class="tag">MOCKUP · datos simulados</span>
+</div>
+<div class="phone">
+  <div class="notch"></div>
+  <section class="screen nonav active" id="s-login">
+    <div class="body">
+      <div class="login-logo">AM<b>VI</b></div>
+      <div class="login-sub">Elegí con qué marca vas a trabajar</div>
+      <div class="brand-pick" onclick="enter('vet')">
+        <div class="av" style="background:#4a148c">VC</div>
+        <div><div class="nm">VetCare</div><div class="rb">Veterinaria</div></div><div class="go">›</div></div>
+      <div class="brand-pick" onclick="enter('inmo')">
+        <div class="av" style="background:#1a1a1a">PP</div>
+        <div><div class="nm">Prime Properties</div><div class="rb">Inmobiliaria</div></div><div class="go">›</div></div>
+      <div class="brand-pick" onclick="enter('croc')">
+        <div class="av" style="background:#556b2f">KP</div>
+        <div><div class="nm">Knit & Purl</div><div class="rb">Crochet</div></div><div class="go">›</div></div>
+      <div class="fakelog">
+        <input class="input" value="demo"><input class="input" type="password" value="1234">
+        <div class="hint">Login de apariencia · en M1 es selector interno</div></div>
+    </div>
+  </section>
+  <section class="screen nonav" id="s-analyze">
+    <div class="analyze">
+      <div class="pulse" id="ana-pulse">AI</div>
+      <div><div class="astep" id="astep">Mirando tu perfil…</div><div class="asmall" id="asmall"></div></div>
+    </div>
+  </section>
+  <section class="screen" id="s-boveda">
+    <div class="topbar"><span class="back" onclick="go('s-login')">‹</span><span class="logo">Tu Bóveda</span></div>
+    <div class="body" id="boveda-body"></div>
+  </section>
+  <section class="screen" id="s-pedido">
+    <div class="topbar"><span class="logo">AM<b>VI</b></span><span class="spacer"></span>
+      <span class="brandchip" id="pedido-chip"></span></div>
+    <div class="body" style="display:flex;flex-direction:column">
+      <div id="pedido-chat"></div><div style="flex:1"></div>
+      <div class="composer"><input id="pedido-input" placeholder="Escribí tu pedido…">
+        <button onclick="go('s-gen');runGen()">↑</button></div>
+      <div class="hint">Pedí en lenguaje natural, como a un empleado</div>
+    </div>
+  </section>
+  <section class="screen" id="s-gen">
+    <div class="gen">
+      <div class="pulse" style="color:#E94560;background:#E94560">✦</div>
+      <div class="genstep" id="genstep">Pensando el ángulo…</div>
+      <div class="genbar"><i id="genfill"></i></div>
+      <div class="asmall">Aplicando los colores y el tono de tu Bóveda</div>
+    </div>
+  </section>
+  <section class="screen" id="s-result">
+    <div class="topbar"><span class="back" onclick="go('s-pedido')">‹</span><span class="logo">Listo para vos</span></div>
+    <div class="body" id="result-body"></div>
+  </section>
+  <div class="toast" id="toast"></div>
+  <div class="navbar" id="navbar" style="display:none">
+    <button class="on" id="nav-crear" onclick="go('s-pedido');navSet('nav-crear')"><span class="ic">✦</span>Crear</button>
+    <button id="nav-piezas" onclick="go('s-result');navSet('nav-piezas')"><span class="ic">▦</span>Piezas</button>
+    <button id="nav-boveda" onclick="go('s-boveda');navSet('nav-boveda')"><span class="ic">◈</span>Bóveda</button>
+  </div>
+</div>
+<div class="map"><b>Flujo (tickets):</b> T03 selector → T04 onboarding + inferencia simulada → pedido en lenguaje natural → T07/T08 Copy+Arte → T06 render → T09 mockup + aprobar/descargar</div>
+<script>
+const BRANDS={
+  vet:{name:'VetCare',handle:'@vetcare',rub:'Veterinaria',ini:'VC',font:'Nunito',
+    colors:['#4a148c','#8bc34a','#c5e1a5'],tone:['cálido','profesional','empático'],
+    no:['lenguaje médico complejo','imágenes sensibles'],
+    ask:'Posts para la campaña de castración del finde',
+    ana:[['Detectando colores…','violeta + verde lima'],['Leyendo tu tono…','cálido, empático']],
+    piece:`<div class="p-vet" style="background:#4a148c">
+      <img class="ph" src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&auto=format&fit=crop" onerror="this.style.display='none'"/>
+      <div class="blk" style="background:#8bc34a;color:#fff">
+        <div class="ti"><span class="hl" style="background:#4a148c">Castrar</span> es<br>un acto de amor</div>
+        <div class="su">Este sábado, turnos protegidos</div></div></div>`,
+    cap:'<b>vetcare</b> Cuidar a quien te cuida también es quererlo 🐶 Este sábado, jornada de castración con atención cálida. <span class="tg">#VetCare #MascotasSanas</span>'},
+  inmo:{name:'Prime Properties',handle:'@primeproperties',rub:'Inmobiliaria',ini:'PP',font:'Cormorant Garamond',
+    colors:['#1a1a1a','#e8e2d5','#c8a04a'],tone:['formal','exclusivo','confiable'],
+    no:['lenguaje informal o jerga','exclamaciones exageradas'],
+    ask:'Publicación de la villa frente al mar en Provence',
+    ana:[['Detectando estética…','editorial, sobria'],['Leyendo tu tono…','formal, exclusivo']],
+    piece:`<div class="p-inmo" style="background:#e8e2d5;color:#1a1a1a">
+      <img class="ph" src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=500&auto=format&fit=crop" onerror="this.style.display='none'"/>
+      <div class="ct"><div class="dv" style="border-color:#c8a04a"></div>
+        <div class="ti">Villa<br>Lumière</div>
+        <div class="su">A secluded villa surrounded by vineyards and olive trees</div>
+        <div class="cta" style="color:#c8a04a;border-color:#c8a04a">Consultar</div></div></div>`,
+    cap:'<b>primeproperties</b> Provence, 2025. Una villa rodeada de viñedos y olivos, con ventanales que abrazan el horizonte. <span class="tg">#PrimeProperties</span>'},
+  croc:{name:'Knit & Purl',handle:'@knitandpurl',rub:'Crochet',ini:'KP',font:'Quicksand',
+    colors:['#556b2f','#c9761d','#f5efe0'],tone:['cercano','artesanal','inspirador'],
+    no:['palabras de producción industrial','venta dura'],
+    ask:'Post para presentar la nueva cartera tejida a mano',
+    ana:[['Detectando colores…','oliva + terracota'],['Leyendo tu tono…','cercano, artesanal']],
+    piece:`<div class="p-croc" style="background:#f5efe0;color:#556b2f">
+      <div class="lg">Knit &amp; Purl</div>
+      <div class="ti">Hecho a mano,<br>hecho con alma</div>
+      <div class="su" style="color:#c9761d">Nueva cartera de la colección tierra</div>
+      <img class="ph" src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&auto=format&fit=crop" onerror="this.style.display='none'"/>
+      <div class="cta" style="background:#c9761d;color:#f5efe0">Ver colección</div></div>`,
+    cap:'<b>knitandpurl</b> Cada punto lleva horas de dedicación 🧶 Nueva cartera tejida a mano, en tonos tierra. <span class="tg">#KnitAndPurl #HechoAMano</span>'}
+};
+let CUR='vet';
+const S=[...document.querySelectorAll('.screen')];
+function go(id){S.forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');
+  S.forEach(s=>s.scrollTop=0);
+  document.getElementById('navbar').style.display=(id==='s-login'||id==='s-analyze')?'none':'flex';}
+function navSet(id){document.querySelectorAll('.navbar button').forEach(b=>b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');}
+function enter(b){CUR=b;const B=BRANDS[b];
+  document.getElementById('ana-pulse').style.color=B.colors[0];
+  document.getElementById('ana-pulse').style.background=B.colors[0];
+  document.getElementById('asmall').textContent=B.handle;
+  go('s-analyze');runAnalyze();}
+function runAnalyze(){const B=BRANDS[CUR];
+  const steps=[['Mirando tu perfil…',B.handle],...B.ana,['Armando tu Bóveda…','casi listo']];
+  let i=0;const st=document.getElementById('astep'),sm=document.getElementById('asmall');
+  st.textContent=steps[0][0];sm.textContent=steps[0][1];
+  const t=setInterval(()=>{i++;if(i>=steps.length){clearInterval(t);buildBoveda();go('s-boveda');navSet('nav-boveda');return;}
+    st.style.opacity=0;setTimeout(()=>{st.textContent=steps[i][0];sm.textContent=steps[i][1];st.style.opacity=1;},180);},950);}
+function buildBoveda(){const B=BRANDS[CUR];
+  document.getElementById('boveda-body').innerHTML=`
+    <span class="inferred">✓ Inferido de ${B.handle}</span>
+    <h2 class="t">Esto encontré de ${B.name}</h2>
+    <p class="s">Revisá y ajustá lo que quieras. Esto queda como tu identidad.</p>
+    <div class="bcard">
+      <div class="brow"><span class="bk">Logo</span><div class="lb" style="background:${B.colors[0]}">${B.ini}</div></div>
+      <div class="brow"><span class="bk">Colores</span><div class="sw">
+        <i style="background:${B.colors[0]}"></i><i style="background:${B.colors[1]}"></i><i style="background:${B.colors[2]}"></i></div></div>
+      <div class="brow"><span class="bk">Tipografía</span><span style="font-weight:600;font-family:'${B.font}'">${B.font}</span></div>
+    </div>
+    <div class="bcard">
+      <div class="bk" style="margin-bottom:10px">Tono</div>
+      ${B.tone.map(t=>`<span class="chip">${t}</span>`).join('')}
+      <div class="bk" style="margin:13px 0 10px">No comunicar</div>
+      ${B.no.map(t=>`<span class="chip">${t}</span>`).join('')}
+    </div>
+    <button class="btn green" onclick="buildPedido();go('s-pedido');navSet('nav-crear')">Está perfecto, activar</button>
+    <button class="btn ghost" style="margin-top:10px">Ajustar algo</button>`;}
+function buildPedido(){const B=BRANDS[CUR];
+  document.getElementById('pedido-chip').innerHTML=`<span class="av" style="background:${B.colors[0]}">${B.ini}</span>${B.name}`;
+  document.getElementById('pedido-chat').innerHTML=`
+    <div class="msg ai">¡Hola! Ya tengo la identidad de ${B.name} cargada. ¿Qué necesitás esta semana?</div>
+    <div class="msg me">${B.ask}</div>
+    <div class="msg ai">Perfecto. Lo preparo con tu marca ahora mismo.</div>`;}
+function runGen(){const steps=['Pensando el ángulo…','Redactando el copy con tu tono…','Diseñando con tus colores…','Maquetando la pieza…'];
+  const f=document.getElementById('genfill'),s=document.getElementById('genstep');let i=0;f.style.width='0';
+  const t=setInterval(()=>{s.textContent=steps[i];f.style.width=((i+1)/steps.length*100)+'%';i++;
+    if(i>=steps.length){clearInterval(t);buildResult();setTimeout(()=>{go('s-result');navSet('nav-piezas');},450);}},800);}
+function buildResult(){const B=BRANDS[CUR];
+  document.getElementById('result-body').innerHTML=`
+    <h2 class="t" style="font-size:19px">Tu pieza con la marca de ${B.name}</h2>
+    <p class="s">Revisá, descargá o pedí cambios.</p>
+    <div class="ig">
+      <div class="ig-head"><div class="ig-av" style="background:${B.colors[0]}">${B.ini}</div>
+        <div class="ig-nm">${B.handle.replace('@','')}<span>Patrocinado</span></div><div class="ig-dots">⋯</div></div>
+      <div class="ig-canvas">${B.piece}</div>
+      <div class="ig-acts">♡ &nbsp; ◇ &nbsp; ⤴</div>
+      <div class="ig-cap">${B.cap}</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn ghost" onclick="toast('Cambios pedidos')">Pedir cambios</button>
+      <button class="btn green" onclick="toast('Descargado ✓')">Aprobar y descargar</button>
+    </div>`;}
+let tt;function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');
+  clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),2000);}
+</script>
+</body>
+</html>

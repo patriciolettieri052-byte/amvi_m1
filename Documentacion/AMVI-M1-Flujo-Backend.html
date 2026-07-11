@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flujo Backend M1</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0E0E12;--surf:#1A1A22;--surf2:#23232E;--line:#33333F;--ink:#F0F0F4;--muted:#8B8B9A;
+--coral:#E94560;--green:#00C56A;--blue:#3DA5D9;--gold:#E8A838;--purple:#9B7EDE;--mono:'JetBrains Mono',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Quicksand',sans-serif;background:var(--bg);color:var(--ink);padding:40px 20px;line-height:1.5}
+.wrap{max-width:760px;margin:0 auto}
+h1{font-size:26px;font-weight:700;margin-bottom:4px}
+.sub{color:var(--muted);font-size:14px;margin-bottom:32px}
+.flow{display:flex;flex-direction:column;align-items:center}
+.node{background:var(--surf);border:1.5px solid var(--line);border-radius:14px;padding:15px 20px;width:100%;max-width:560px;position:relative}
+.node .top{display:flex;align-items:center;gap:10px}
+.node .lbl{font-weight:700;font-size:15px}
+.node .who{font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:5px;margin-left:auto;font-weight:500}
+.node .desc{font-size:12.5px;color:var(--muted);margin-top:5px}
+.node.user{border-color:var(--purple)} .who.user{background:rgba(155,126,222,.15);color:var(--purple)}
+.node.exec{border-color:var(--ink)} .who.exec{background:rgba(240,240,244,.1);color:var(--ink)}
+.node.store{border-color:var(--green)} .who.store{background:rgba(0,197,106,.15);color:var(--green)}
+.node.ai{border-color:var(--blue)} .who.ai{background:rgba(61,165,217,.15);color:var(--blue)}
+.node.render{border-color:var(--gold)} .who.render{background:rgba(232,168,56,.15);color:var(--gold)}
+.node.ui{border-color:var(--purple)} .who.ui{background:rgba(155,126,222,.15);color:var(--purple)}
+.arrow{width:2px;height:30px;background:var(--line);position:relative;margin:5px 0}
+.arrow::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid var(--line)}
+.arrow .j{position:absolute;left:16px;top:50%;transform:translateY(-50%);white-space:nowrap;font-family:var(--mono);font-size:10px;color:var(--muted);background:var(--bg);padding:2px 0}
+.stack{background:var(--surf2);border:1px dashed var(--green);border-radius:10px;padding:8px 12px;font-size:11px;color:var(--muted);margin-top:8px;max-width:560px;width:100%;font-family:var(--mono)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;font-size:11px;font-weight:600;color:var(--muted)}
+.legend span{display:flex;align-items:center;gap:5px}
+.dot{width:9px;height:9px;border-radius:3px}
+.note{font-size:11px;color:var(--muted);font-style:italic;margin-top:20px;text-align:center}
+</style></head><body>
+<div class="wrap">
+<h1>Flujo Backend · AMVI M1</h1>
+<div class="sub">De lenguaje natural a pieza mockupeada. 2 llamadas de IA, 1 render.</div>
+
+<div class="flow">
+
+  <div class="node user"><div class="top"><span class="lbl">1 · Usuario habla</span><span class="who user">CLIENTE</span></div>
+    <div class="desc">"Necesito posts para la promo de castración del finde" — texto libre.</div></div>
+  <div class="arrow"><span class="j">texto del pedido</span></div>
+
+  <div class="node exec"><div class="top"><span class="lbl">2 · Ejecutivo de Cuentas</span><span class="who exec">SIN IA (M1)</span></div>
+    <div class="desc">Captura el pedido y dispara el pipeline. En M1 solo pasa el texto — no interpreta.</div></div>
+  <div class="arrow"><span class="j">lee La Bóveda del tenant</span></div>
+
+  <div class="node store"><div class="top"><span class="lbl">3 · La Bóveda (Supabase)</span><span class="who store">DATOS</span></div>
+    <div class="desc">Trae identidad: paleta, tipografía, logo, tono, restricciones. + ADN del rubro.</div></div>
+  <div class="arrow"><span class="j">ADN + boveda + pedido →</span></div>
+
+  <div class="node ai"><div class="top"><span class="lbl">4 · Agente Copy</span><span class="who ai">IA · JSON</span></div>
+    <div class="desc">Escribe el texto respetando tono y restricciones. Devuelve JSON.</div></div>
+  <div class="arrow"><span class="j">{titulo, subtitulo, cta, caption}</span></div>
+
+  <div class="node ai"><div class="top"><span class="lbl">5 · Agente Arte</span><span class="who ai">IA · JSON</span></div>
+    <div class="desc">Elige template, colores y jerarquía (de la paleta de la Bóveda). No dibuja píxeles.</div></div>
+  <div class="arrow"><span class="j">{template, bg, jerarquia, ...}</span></div>
+
+  <div class="node render"><div class="top"><span class="lbl">6 · Render Puppeteer</span><span class="who render">→ PNG</span></div>
+    <div class="desc">Inyecta el JSON en el template HTML y fotografía a PNG 1080×1080.</div></div>
+  <div class="arrow"><span class="j">PNG</span></div>
+
+  <div class="node ui"><div class="top"><span class="lbl">7 · Mockup de red social</span><span class="who ui">UI</span></div>
+    <div class="desc">Muestra el PNG + el caption dentro de un feed de Instagram simulado. Aprobar / cambios / descargar.</div></div>
+
+</div>
+
+<div class="legend">
+  <span><i class="dot" style="background:var(--ink)"></i>Sin IA</span>
+  <span><i class="dot" style="background:var(--green)"></i>Datos</span>
+  <span><i class="dot" style="background:var(--blue)"></i>IA (2 llamadas)</span>
+  <span><i class="dot" style="background:var(--gold)"></i>Render</span>
+  <span><i class="dot" style="background:var(--purple)"></i>UI</span>
+</div>
+<div class="note">Regla: cada etapa recibe y devuelve JSON conocido. Nunca texto libre entre agentes.</div>
+</div>
+</body></html>
