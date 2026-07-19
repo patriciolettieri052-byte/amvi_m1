@@ -7,7 +7,6 @@ import Link from 'next/link';
 
 export default function RegistroPage() {
   const router = useRouter();
-  const [codigo, setCodigo] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,24 +18,7 @@ export default function RegistroPage() {
     setErrorMsg(null);
 
     try {
-      const codeUpper = codigo.trim().toUpperCase();
-
-      // 1. Validar código de invitación
-      const { data: invData, error: invError } = await supabase
-        .from('invitaciones')
-        .select('*')
-        .eq('codigo', codeUpper)
-        .single();
-
-      if (invError || !invData) {
-        throw new Error('Código de invitación no válido');
-      }
-
-      if (invData.usado) {
-        throw new Error('Este código de invitación ya fue utilizado');
-      }
-
-      // 2. Crear usuario en Supabase Auth
+      // 1. Crear usuario en Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password
@@ -48,18 +30,12 @@ export default function RegistroPage() {
 
       const userId = authData.user.id;
 
-      // 3. Marcar invitación como usada
-      await supabase
-        .from('invitaciones')
-        .update({ usado: true, usado_por: userId })
-        .eq('id', invData.id);
-
-      // 4. Crear la Bóveda inicial vacía (B05)
-      await supabase
+      // 2. Crear la Bóveda inicial vacía
+      const { error: bovedaError } = await supabase
         .from('marcas_boveda')
         .insert({
           tenant_id: userId,
-          vertical: invData.vertical_sugerido || null,
+          vertical: null,
           identidad: {},
           conversacion: {},
           audiencia: {},
@@ -67,7 +43,11 @@ export default function RegistroPage() {
           onboarding_completo: false
         });
 
-      // 5. Iniciar sesión automáticamente e ir a Onboarding
+      if (bovedaError) {
+        console.error('Error creando bóveda inicial:', bovedaError);
+      }
+
+      // 3. Iniciar sesión automáticamente e ir al Onboarding
       await supabase.auth.signInWithPassword({ email, password });
       router.push('/onboarding');
 
@@ -82,11 +62,11 @@ export default function RegistroPage() {
     <main className="app-container" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '24px', minHeight: '100vh' }}>
       <div style={{ textAlign: 'center', marginBottom: '32px' }}>
         <h1 style={{ fontFamily: 'var(--font-quicksand)', fontSize: '2.5rem', color: '#111827', margin: '0 0 8px 0', fontWeight: 700 }}>AMVI</h1>
-        <p style={{ color: '#6B7280', fontSize: '0.95rem' }}>Acceso Beta Exclusivo</p>
+        <p style={{ color: '#6B7280', fontSize: '0.95rem' }}>Registro Beta Testers</p>
       </div>
 
       <div style={{ background: '#FFFFFF', padding: '28px', borderRadius: '16px', border: '1px solid #E5E7EB', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
-        <h2 style={{ fontSize: '1.25rem', color: '#111827', marginTop: 0, marginBottom: '20px', fontWeight: 600 }}>Registro por Invitación</h2>
+        <h2 style={{ fontSize: '1.25rem', color: '#111827', marginTop: 0, marginBottom: '20px', fontWeight: 600 }}>Creá tu cuenta de prueba</h2>
 
         {errorMsg && (
           <div style={{ background: '#FEE2E2', border: '1px solid #FCA5A5', color: '#991B1B', padding: '12px', borderRadius: '8px', fontSize: '0.875rem', marginBottom: '16px' }}>
@@ -95,18 +75,6 @@ export default function RegistroPage() {
         )}
 
         <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Código de Invitación</label>
-            <input
-              type="text"
-              required
-              placeholder="EJ: BETA-VET"
-              value={codigo}
-              onChange={(e) => setCodigo(e.target.value)}
-              style={{ width: '100%', padding: '12px 14px', background: 'var(--input-bg, #F7F6F2)', border: '1px solid #E5E7EB', borderRadius: '10px', fontSize: '0.95rem', color: '#111827', outline: 'none', textTransform: 'uppercase' }}
-            />
-          </div>
-
           <div>
             <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Email</label>
             <input
@@ -136,7 +104,7 @@ export default function RegistroPage() {
             disabled={loading}
             style={{ width: '100%', padding: '14px', background: 'var(--accent-color, #E05638)', color: '#FFFFFF', border: 'none', borderRadius: '10px', fontSize: '1rem', fontWeight: '600', cursor: 'pointer', marginTop: '8px', transition: 'all 0.2s' }}
           >
-            {loading ? 'Creando tu acceso…' : 'Comenzar Onboarding'}
+            {loading ? 'Creando tu cuenta…' : 'Crear Cuenta y Comenzar'}
           </button>
         </form>
 
