@@ -1,14 +1,22 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabase, getAuthUser } from '@/lib/supabase';
 import { getBoveda } from '@/lib/runner';
 
 export async function POST(request: Request) {
   try {
-    const { tenant_id, action, note, copy, art } = await request.json();
-
-    if (!tenant_id || !action || !copy || !art) {
+    const user = await getAuthUser(request);
+    if (!user) {
       return NextResponse.json(
-        { error: 'Faltan parámetros obligatorios: tenant_id, action, copy y art' },
+        { error: 'No autorizado. Iniciá sesión nuevamente.' },
+        { status: 401 }
+      );
+    }
+
+    const { action, note, copy, art } = await request.json();
+
+    if (!action || !copy || !art) {
+      return NextResponse.json(
+        { error: 'Faltan parámetros obligatorios: action, copy y art' },
         { status: 400 }
       );
     }
@@ -25,14 +33,8 @@ export async function POST(request: Request) {
       timestamp
     };
 
-    // Si es un ID mock ('vet', 'croc', 'inmo'), no actualizamos base de datos real
-    if (['vet', 'croc', 'inmo'].includes(tenant_id)) {
-      console.log(`[MOCK FEEDBACK] Guardada señal para ${tenant_id}:`, signal);
-      return NextResponse.json({ success: true, piece_id, signal });
-    }
-
-    // 1. Obtener la bóveda actual
-    const boveda = await getBoveda(tenant_id);
+    // 1. Obtener la bóveda actual del usuario autenticado
+    const boveda = await getBoveda(user.id);
     const aprendizaje = boveda.aprendizaje || { approved: [], rejected: [], notes: [] };
 
     // 2. Insertar en el historial
@@ -51,8 +53,8 @@ export async function POST(request: Request) {
     // 3. Actualizar en Supabase
     const { error } = await supabase
       .from('marcas_boveda')
-      .update({ aprendizaje })
-      .eq('tenant_id', tenant_id);
+      .update({ aprendizaje, updated_at: timestamp })
+      .eq('tenant_id', user.id);
 
     if (error) {
       throw error;

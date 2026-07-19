@@ -10,3 +10,12 @@ if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_A
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+export async function getAuthUser(request: Request) {
+  const authHeader = request.headers.get('Authorization');
+  if (!authHeader) return null;
+  const token = authHeader.replace('Bearer ', '');
+  const { data: { user }, error } = await supabase.auth.getUser(token);
+  if (error || !user) return null;
+  return user;
+}

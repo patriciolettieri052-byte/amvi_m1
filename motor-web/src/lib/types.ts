@@ -32,9 +32,30 @@ export const AprendizajeSchema = z.object({
 
 export const BovedaSchema = z.object({
   tenant_id: z.string().uuid().optional(),
-  identidad: IdentidadSchema,
-  aprendizaje: AprendizajeSchema.default({ approved: [], rejected: [], notes: [] })
+  vertical: z.string().nullable().optional(),
+  identidad: IdentidadSchema.partial().default({}),
+  conversacion: z.record(z.string(), z.any()).default({}),
+  audiencia: z.record(z.string(), z.any()).default({}),
+  aprendizaje: AprendizajeSchema.default({ approved: [], rejected: [], notes: [] }),
+  onboarding_completo: z.boolean().default(false)
 });
+
+export const RubroDetectionSchema = z.object({
+  rubro: z.enum(['veterinaria', 'inmobiliaria', 'crochet', 'otro']),
+  brand_name_sugerido: z.string().nullable().optional(),
+  detalle: z.string().nullable().optional(),
+  confianza: z.enum(['alta', 'baja'])
+});
+
+export const ToneInferenceSchema = z.object({
+  cercania: z.enum(['cercano', 'equilibrado', 'profesional']),
+  energia: z.enum(['alegre', 'equilibrado', 'sereno']),
+  estilo: z.enum(['didactico', 'equilibrado', 'directo']),
+  resumen_tono: z.string()
+});
+
+export type RubroDetectionResponse = z.infer<typeof RubroDetectionSchema>;
+export type ToneInferenceResponse = z.infer<typeof ToneInferenceSchema>;
 
 export const CopyResponseSchema = z.object({
   titulo: z.string().min(1, 'El título es requerido'),

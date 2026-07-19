@@ -4,59 +4,27 @@ import { supabase } from './supabase';
 import {
   CopyResponseSchema,
   ArtResponseSchema,
+  RubroDetectionSchema,
+  ToneInferenceSchema,
   CopyResponse,
   ArtResponse,
+  RubroDetectionResponse,
+  ToneInferenceResponse,
   PipelineResult,
   Boveda
 } from './types';
 
-// Marcas mock por defecto (si Supabase no está configurado o falla)
-const MOCK_BRANDS: Record<string, any> = {
-  vet: {
-    brand_name: "VetCare (Veterinaria)",
-    logo_url: "https://placehold.co/400x400/004d40/ffffff?text=VetCare",
-    palette: { primary: "#004d40", secondary: "#80cbc4", accent: "#ffab00" },
-    typography: "Inter",
-    tone: ["cálido", "profesional", "empático"],
-    restrictions: ["no usar lenguaje médico complejo", "no mostrar imágenes sensibles"]
-  },
-  croc: {
-    brand_name: "Knit & Purl (Crochet)",
-    logo_url: "https://placehold.co/400x400/f48fb1/ffffff?text=KnitPurl",
-    palette: { primary: "#f48fb1", secondary: "#f8bbd0", accent: "#ec407a" },
-    typography: "Outfit",
-    tone: ["cercano", "artesanal", "inspirador"],
-    restrictions: ["evitar palabras de producción industrial", "no presionar a la venta dura"]
-  },
-  inmo: {
-    brand_name: "Prime Properties (Inmobiliaria)",
-    logo_url: "https://placehold.co/400x400/1a237e/ffffff?text=Prime",
-    palette: { primary: "#1a237e", secondary: "#9fa8da", accent: "#ffd54f" },
-    typography: "Roboto",
-    tone: ["formal", "exclusivo", "confiable"],
-    restrictions: ["no usar lenguaje informal o jerga", "nunca usar signos de exclamación exagerados"]
-  }
-};
-
 // Cargar ADN y prompts desde los archivos de recursos
 function loadResourceFile(...relativePaths: string[]): string {
   try {
-    // Intentar buscar en la carpeta superior '../recursos'
-    const fullPath = path.join(process.cwd(), '..', 'recursos', ...relativePaths);
-    if (fs.existsSync(fullPath)) {
-      return fs.readFileSync(fullPath, 'utf8');
-    }
-    
-    // Fallback: buscar localmente si se copiaron al proyecto
     const localPath = path.join(process.cwd(), 'recursos', ...relativePaths);
     if (fs.existsSync(localPath)) {
       return fs.readFileSync(localPath, 'utf8');
     }
-
-    throw new Error(`Archivo no encontrado en ${fullPath} ni en ${localPath}`);
+    throw new Error(`Archivo no encontrado: ${localPath}`);
   } catch (err: any) {
     console.error(`Error al cargar recurso ${relativePaths.join('/')}:`, err.message);
-    return '';
+    throw err;
   }
 }
 
@@ -68,48 +36,27 @@ export function getVerticalAdn(vertical: string): any {
   return adns[vertical] || adns[vertical.toLowerCase()] || null;
 }
 
-// Obtener datos de la Bóveda de Supabase (o mock si falla)
+// Obtener datos de la Bóveda de Supabase
 export async function getBoveda(tenantIdOrKey: string): Promise<Boveda> {
-  // Si parece una clave mock ('vet', 'inmo', 'croc') o Supabase no está conectado
-  if (MOCK_BRANDS[tenantIdOrKey]) {
-    return {
-      tenant_id: tenantIdOrKey,
-      identidad: MOCK_BRANDS[tenantIdOrKey],
-      aprendizaje: { approved: [], rejected: [], notes: [] }
-    };
+  const { data, error } = await supabase
+    .from('marcas_boveda')
+    .select('*')
+    .eq('tenant_id', tenantIdOrKey)
+    .single();
+
+  if (error || !data) {
+    throw new Error(`No se encontró tenant ${tenantIdOrKey} en Supabase o error de conexión: ${error?.message}`);
   }
 
-  try {
-    const { data, error } = await supabase
-      .from('marcas_boveda')
-      .select('*')
-      .eq('tenant_id', tenantIdOrKey)
-      .single();
-
-    if (error || !data) {
-      console.warn(`No se encontró tenant ${tenantIdOrKey} en Supabase. Usando fallback mock.`);
-      // Buscar coincidencia parcial con las claves mock
-      const matchedKey = Object.keys(MOCK_BRANDS).find(k => tenantIdOrKey.toLowerCase().includes(k)) || 'vet';
-      return {
-        tenant_id: tenantIdOrKey,
-        identidad: MOCK_BRANDS[matchedKey],
-        aprendizaje: { approved: [], rejected: [], notes: [] }
-      };
-    }
-
-    return {
-      tenant_id: data.tenant_id,
-      identidad: data.identidad,
-      aprendizaje: data.aprendizaje || { approved: [], rejected: [], notes: [] }
-    };
-  } catch (err) {
-    console.error('Error al conectar con Supabase:', err);
-    return {
-      tenant_id: tenantIdOrKey,
-      identidad: MOCK_BRANDS.vet,
-      aprendizaje: { approved: [], rejected: [], notes: [] }
-    };
-  }
+  return {
+    tenant_id: data.tenant_id,
+    vertical: data.vertical || null,
+    identidad: data.identidad || {},
+    conversacion: data.conversacion || {},
+    audiencia: data.audiencia || {},
+    aprendizaje: data.aprendizaje || { approved: [], rejected: [], notes: [] },
+    onboarding_completo: data.onboarding_completo || false
+  };
 }
 
 // Llamada a la API de IA (Gemini o OpenAI)
@@ -176,6 +123,43 @@ async function callLLM(systemPrompt: string, userPrompt: string): Promise<string
   throw new Error('No API Keys configured');
 }
 
+export async function detectRubro(userText: string): Promise<RubroDetectionResponse> {
+  const systemPrompt = `Eres un asistente de onboarding para AMVI. Analiza el texto del negocio del usuario y detecta el rubro principal.
+Devuelve un JSON estrictamente en este formato:
+{
+  "rubro": "veterinaria | inmobiliaria | crochet | otro",
+  "brand_name_sugerido": "nombre de la marca si aparece en el texto, o null",
+  "detalle": "ubicación o detalles extra si aparecen, o null",
+  "confianza": "alta | baja"
+}
+Reglas:
+- Si el texto se refiere a mascotas, animales, clínica veterinaria -> rubro: "veterinaria" (confianza "alta").
+- Si se refiere a venta/alquiler de casas, departamentos, propiedades, penthouse -> rubro: "inmobiliaria" (confianza "alta").
+- Si se refiere a tejido, crochet, lana, amigurumis, artesanías en hilo -> rubro: "crochet" (confianza "alta").
+- Si es vago o ambiguo -> confianza: "baja".
+- Si no pertenece a estos 3 rubros conocidos -> rubro: "otro".`;
+
+  const raw = await callLLM(systemPrompt, userText);
+  return RubroDetectionSchema.parse(JSON.parse(raw));
+}
+
+export async function inferTone(userText: string): Promise<ToneInferenceResponse> {
+  const systemPrompt = `Eres un experto en personalidad de marca de AMVI. Analiza la descripción del tono/persona del negocio del usuario y clasifícalo en 3 ejes acotados.
+Devuelve un JSON estrictamente en este formato:
+{
+  "cercania": "cercano | equilibrado | profesional",
+  "energia": "alegre | equilibrado | sereno",
+  "estilo": "didactico | equilibrado | directo",
+  "resumen_tono": "frase corta y legible resumida para el dueño"
+}
+Reglas:
+- NUNCA devuelvas valores fuera de los permitidos por el esquema.
+- "resumen_tono" debe ser una frase amable y síntesis de 5-10 palabras (ej. "Tono cercano, cálido y profesional").`;
+
+  const raw = await callLLM(systemPrompt, userText);
+  return ToneInferenceSchema.parse(JSON.parse(raw));
+}
+
 // Orquestador principal (Pipeline Runner)
 export async function runPipeline(tenantId: string, pedido: string): Promise<PipelineResult> {
   // 1. Obtener Bóveda
@@ -184,12 +168,16 @@ export async function runPipeline(tenantId: string, pedido: string): Promise<Pip
   const aprendizaje = boveda.aprendizaje;
 
   // Determinar el vertical (veterinaria, crochet o inmobiliaria)
-  let vertical = 'veterinaria';
-  const brandNameLower = identidad.brand_name.toLowerCase();
-  if (brandNameLower.includes('inmobiliaria') || brandNameLower.includes('properties') || brandNameLower.includes('prime')) {
-    vertical = 'inmobiliaria';
-  } else if (brandNameLower.includes('crochet') || brandNameLower.includes('knit') || brandNameLower.includes('purl')) {
-    vertical = 'crochet';
+  let vertical = boveda.vertical || 'veterinaria';
+  if (vertical === 'otro' || !['veterinaria', 'inmobiliaria', 'crochet'].includes(vertical)) {
+    const brandNameLower = (identidad.brand_name || '').toLowerCase();
+    if (brandNameLower.includes('inmobiliaria') || brandNameLower.includes('properties') || brandNameLower.includes('prime')) {
+      vertical = 'inmobiliaria';
+    } else if (brandNameLower.includes('crochet') || brandNameLower.includes('knit') || brandNameLower.includes('purl')) {
+      vertical = 'crochet';
+    } else {
+      vertical = 'veterinaria';
+    }
   }
 
   // 2. Obtener ADN del vertical
@@ -232,63 +220,8 @@ export async function runPipeline(tenantId: string, pedido: string): Promise<Pip
     artJSON = ArtResponseSchema.parse(JSON.parse(rawArtResponse));
 
   } catch (err: any) {
-    console.warn('Llamada a IA falló o no está configurada. Usando generación simulada inteligente.', err.message);
-    usingMockAI = true;
-
-    // Simulación inteligente de Copy y Arte basada en el rubro
-    if (vertical === 'veterinaria') {
-      copyJSON = {
-        titulo: 'CASTRAR ES CUIDAR',
-        subtitulo: 'Este sábado, jornada con turnos protegidos.',
-        cta: 'Reservar Lugar',
-        caption: `Cuidar a quien te cuida también es quererlo 🐾 Este sábado, jornada especial de castración con atención súper cálida. Escríbinos al link de la bio. #VetCare #MascotasSanas`
-      };
-      artJSON = {
-        template: 'template_foto_recortada_bloque',
-        bg: identidad.palette.primary, // Usar colores reales de la boveda
-        text_color: '#ffffff',
-        accent_color: identidad.palette.secondary,
-        title_size: 'lg',
-        layout: 'foto de mascota recortada con bloque verde a la derecha',
-        logo_position: 'top-right',
-        highlight_words: ['Castrar']
-      };
-    } else if (vertical === 'inmobiliaria') {
-      copyJSON = {
-        titulo: 'Villa Lumière',
-        subtitulo: 'Una villa privada rodeada de viñedos y olivos.',
-        cta: 'Consultar',
-        caption: `Provence, 2026. Una propiedad de ensueño diseñada para integrarse en la naturaleza. Ventanales de piso a techo y terminaciones en madera noble. #PrimeProperties #Provence`
-      };
-      artJSON = {
-        template: 'template_foto_full_texto_minimo',
-        bg: '#F5F5F5',
-        text_color: identidad.palette.primary,
-        accent_color: identidad.palette.accent,
-        title_size: 'lg',
-        layout: 'foto amplia superior, espacio vacio con tipografia editorial abajo',
-        logo_position: 'none',
-        highlight_words: []
-      };
-    } else {
-      // Crochet
-      copyJSON = {
-        titulo: 'Hecho con cariño',
-        subtitulo: 'Presentamos nuestro nuevo amigurumi tejido.',
-        cta: 'Ver Detalles',
-        caption: `Cada punto lleva horas de cariño y dedicación 🧶 Nuevo muñeco de apego tejido en hilo de algodón peinado. Edición súper limitada. #KnitAndPurl #Amigurumi`
-      };
-      artJSON = {
-        template: 'template_producto_centrado_crema',
-        bg: '#F9F6F0', // Tono crema cálido
-        text_color: identidad.palette.primary,
-        accent_color: identidad.palette.accent,
-        title_size: 'lg',
-        layout: 'producto centrado con marco y textos curvados',
-        logo_position: 'top-left',
-        highlight_words: ['hecho', 'alma']
-      };
-    }
+    console.error('Llamada a IA falló.', err.message);
+    throw err;
   }
 
   // 5. Ensamblar RenderJob y llamar al servicio de renderizado de Puppeteer
@@ -317,8 +250,8 @@ export async function runPipeline(tenantId: string, pedido: string): Promise<Pip
       subtitulo: copyJSON.subtitulo,
       cta: copyJSON.cta
     },
-    logo_url: identidad.logo_url,
-    font: identidad.typography
+    logo_url: identidad.logo_url || 'https://placehold.co/400x400/111827/ffffff?text=AMVI',
+    font: identidad.typography || 'var(--font-quicksand)'
   };
 
   try {
@@ -344,15 +277,6 @@ export async function runPipeline(tenantId: string, pedido: string): Promise<Pip
     };
   } catch (err: any) {
     console.error('Error al llamar al servicio de renderizado Puppeteer:', err.message);
-    
-    // Si falla el servicio de renderizado Puppeteer y no tenemos servidor corriendo,
-    // devolvemos una simulación de imagen (usamos placeholders del frontend del mockup)
-    // para asegurar que la demo siempre pueda mostrar algo.
-    return {
-      png_url: 'MOCK_HTML_INJECTION', // Señal para que el frontend dibuje el render local en HTML
-      copy: copyJSON,
-      art: artJSON,
-      caption: copyJSON.caption
-    };
+    throw err;
   }
 }
