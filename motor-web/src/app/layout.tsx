@@ -21,7 +21,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: 'AMVI · M1 - Motor de Contenido',
+  title: 'AMVI · Tu Agencia de Marketing Virtual Inhouse',
   description: 'Módulo 1: Motor de generación de contenido visual premium',
 };
 

@@ -62,7 +62,7 @@ export default function RegistroPage() {
     <main className="app-container" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '24px', minHeight: '100vh' }}>
       <div style={{ textAlign: 'center', marginBottom: '32px' }}>
         <h1 style={{ fontFamily: 'var(--font-quicksand)', fontSize: '2.5rem', color: '#111827', margin: '0 0 8px 0', fontWeight: 700 }}>AMVI</h1>
-        <p style={{ color: '#6B7280', fontSize: '0.95rem' }}>Registro Beta Testers</p>
+        <p style={{ color: '#6B7280', fontSize: '0.95rem' }}>Tu Agencia de Marketing Virtual Inhouse</p>
       </div>
 
       <div style={{ background: '#FFFFFF', padding: '28px', borderRadius: '16px', border: '1px solid #E5E7EB', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
