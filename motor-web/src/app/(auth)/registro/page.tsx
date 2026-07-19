@@ -11,11 +11,13 @@ export default function RegistroPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setErrorMsg(null);
+    setSuccessMsg(null);
 
     try {
       // 1. Crear usuario en Supabase Auth
@@ -28,28 +30,13 @@ export default function RegistroPage() {
         throw new Error(authError?.message || 'Error al registrar el usuario');
       }
 
-      const userId = authData.user.id;
-
-      // 2. Crear la Bóveda inicial vacía
-      const { error: bovedaError } = await supabase
-        .from('marcas_boveda')
-        .insert({
-          tenant_id: userId,
-          vertical: null,
-          identidad: {},
-          conversacion: {},
-          audiencia: {},
-          aprendizaje: { approved: [], rejected: [], notes: [] },
-          onboarding_completo: false
-        });
-
-      if (bovedaError) {
-        console.error('Error creando bóveda inicial:', bovedaError);
+      // Si Supabase devuelve sesión activa (confirmación de email desactivada)
+      if (authData.session) {
+        router.push('/onboarding');
+      } else {
+        // Si requiere confirmación por mail
+        setSuccessMsg('¡Cuenta creada con éxito! Por favor revisá tu casilla de correo y confirmá tu email para iniciar sesión y empezar el onboarding.');
       }
-
-      // 3. Iniciar sesión automáticamente e ir al Onboarding
-      await supabase.auth.signInWithPassword({ email, password });
-      router.push('/onboarding');
 
     } catch (err: any) {
       setErrorMsg(err.message || 'Error en el registro');
@@ -74,39 +61,48 @@ export default function RegistroPage() {
           </div>
         )}
 
-        <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Email</label>
-            <input
-              type="email"
-              required
-              placeholder="tu@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              style={{ width: '100%', padding: '12px 14px', background: 'var(--input-bg, #F7F6F2)', border: '1px solid #E5E7EB', borderRadius: '10px', fontSize: '0.95rem', color: '#111827', outline: 'none' }}
-            />
+        {successMsg ? (
+          <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', color: '#166534', padding: '16px', borderRadius: '10px', fontSize: '0.95rem', textAlign: 'center', lineHeight: '1.5' }}>
+            <p style={{ margin: '0 0 12px 0', fontWeight: 600 }}>{successMsg}</p>
+            <Link href="/login" style={{ color: 'var(--accent-color, #E05638)', fontWeight: 700, textDecoration: 'none' }}>
+              Ir al Login
+            </Link>
           </div>
+        ) : (
+          <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Email</label>
+              <input
+                type="email"
+                required
+                placeholder="tu@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                style={{ width: '100%', padding: '12px 14px', background: 'var(--input-bg, #F7F6F2)', border: '1px solid #E5E7EB', borderRadius: '10px', fontSize: '0.95rem', color: '#111827', outline: 'none' }}
+              />
+            </div>
 
-          <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Contraseña</label>
-            <input
-              type="password"
-              required
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              style={{ width: '100%', padding: '12px 14px', background: 'var(--input-bg, #F7F6F2)', border: '1px solid #E5E7EB', borderRadius: '10px', fontSize: '0.95rem', color: '#111827', outline: 'none' }}
-            />
-          </div>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Contraseña</label>
+              <input
+                type="password"
+                required
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                style={{ width: '100%', padding: '12px 14px', background: 'var(--input-bg, #F7F6F2)', border: '1px solid #E5E7EB', borderRadius: '10px', fontSize: '0.95rem', color: '#111827', outline: 'none' }}
+              />
+            </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            style={{ width: '100%', padding: '14px', background: 'var(--accent-color, #E05638)', color: '#FFFFFF', border: 'none', borderRadius: '10px', fontSize: '1rem', fontWeight: '600', cursor: 'pointer', marginTop: '8px', transition: 'all 0.2s' }}
-          >
-            {loading ? 'Creando tu cuenta…' : 'Crear Cuenta y Comenzar'}
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={loading}
+              style={{ width: '100%', padding: '14px', background: 'var(--accent-color, #E05638)', color: '#FFFFFF', border: 'none', borderRadius: '10px', fontSize: '1rem', fontWeight: '600', cursor: 'pointer', marginTop: '8px', transition: 'all 0.2s' }}
+            >
+              {loading ? 'Creando tu cuenta…' : 'Crear Cuenta y Comenzar'}
+            </button>
+          </form>
+        )}
 
         <div style={{ marginTop: '20px', textAlign: 'center', fontSize: '0.875rem', color: '#6B7280' }}>
           ¿Ya tenés cuenta?{' '}
