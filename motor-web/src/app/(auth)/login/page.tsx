@@ -88,7 +88,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            style={{ width: '100%', padding: '14px', background: 'var(--accent-color, #E05638)', color: '#FFFFFF', border: 'none', borderRadius: '10px', fontSize: '1rem', fontWeight: 600, cursor: 'pointer', marginTop: '8px', transition: 'all 0.2s' }}
+            style={{ width: '100%', padding: '14px', background: 'var(--coral, #E94560)', color: '#FFFFFF', border: 'none', borderRadius: '10px', fontSize: '1rem', fontWeight: 600, cursor: 'pointer', marginTop: '8px', transition: 'all 0.2s' }}
           >
             {loading ? 'Ingresando…' : 'Entrar'}
           </button>
@@ -96,7 +96,7 @@ export default function LoginPage() {
 
         <div style={{ marginTop: '20px', textAlign: 'center', fontSize: '0.875rem', color: '#6B7280' }}>
           ¿No tenés una cuenta?{' '}
-          <Link href="/registro" style={{ color: 'var(--accent-color, #E05638)', fontWeight: 600, textDecoration: 'none' }}>
+          <Link href="/registro" style={{ color: 'var(--coral, #E94560)', fontWeight: 600, textDecoration: 'none' }}>
             Registrate acá
           </Link>
         </div>

@@ -11,6 +11,16 @@ if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_A
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+export function getSupabaseServerClient(token: string) {
+  return createClient(supabaseUrl, supabaseAnonKey, {
+    global: {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  });
+}
+
 export async function getAuthUser(request: Request) {
   const authHeader = request.headers.get('Authorization');
   if (!authHeader) return null;

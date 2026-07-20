@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { supabase } from './supabase';
+import { supabase, getSupabaseServerClient } from './supabase';
 import {
   CopyResponseSchema,
   ArtResponseSchema,
@@ -37,8 +37,9 @@ export function getVerticalAdn(vertical: string): any {
 }
 
 // Obtener datos de la Bóveda de Supabase
-export async function getBoveda(tenantIdOrKey: string): Promise<Boveda> {
-  const { data, error } = await supabase
+export async function getBoveda(tenantIdOrKey: string, token?: string): Promise<Boveda> {
+  const client = token ? getSupabaseServerClient(token) : supabase;
+  const { data, error } = await client
     .from('marcas_boveda')
     .select('*')
     .eq('tenant_id', tenantIdOrKey)
@@ -161,9 +162,9 @@ Reglas:
 }
 
 // Orquestador principal (Pipeline Runner)
-export async function runPipeline(tenantId: string, pedido: string): Promise<PipelineResult> {
+export async function runPipeline(tenantId: string, pedido: string, token?: string): Promise<PipelineResult> {
   // 1. Obtener Bóveda
-  const boveda = await getBoveda(tenantId);
+  const boveda = await getBoveda(tenantId, token);
   const identidad = boveda.identidad;
   const aprendizaje = boveda.aprendizaje;
 

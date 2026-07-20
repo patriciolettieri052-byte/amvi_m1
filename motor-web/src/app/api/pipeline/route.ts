@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server';
 import { runPipeline } from '@/lib/runner';
-import { getAuthUser, supabase } from '@/lib/supabase';
+import { getAuthUser, getSupabaseServerClient } from '@/lib/supabase';
 
 export async function POST(request: Request) {
   try {
+    const authHeader = request.headers.get('Authorization') || '';
+    const token = authHeader.replace('Bearer ', '');
     const user = await getAuthUser(request);
-    if (!user) {
+
+    if (!user || !token) {
       return NextResponse.json(
         { error: 'No autorizado. Iniciá sesión nuevamente.' },
         { status: 401 }
@@ -21,8 +24,10 @@ export async function POST(request: Request) {
       );
     }
 
+    const client = getSupabaseServerClient(token);
+
     // B09: Validar tope de 5 piezas por usuario
-    const { count, error: countErr } = await supabase
+    const { count, error: countErr } = await client
       .from('piezas')
       .select('*', { count: 'exact', head: true })
       .eq('tenant_id', user.id);
@@ -38,11 +43,11 @@ export async function POST(request: Request) {
       );
     }
 
-    // Ejecutar Pipeline Runner con el ID seguro del usuario
-    const result = await runPipeline(user.id, pedido);
+    // Ejecutar Pipeline Runner con el ID seguro del usuario y el token de sesión
+    const result = await runPipeline(user.id, pedido, token);
 
     // Registrar la pieza generada en la tabla `piezas`
-    await supabase
+    await client
       .from('piezas')
       .insert({
         tenant_id: user.id,

@@ -22,7 +22,7 @@ const DEFAULT_ADN: Record<string, any> = {
     restrictions: ['evitar palabras de producción industrial', 'no presionar a la venta dura']
   },
   otro: {
-    palette: { primary: '#111827', secondary: '#4B5563', accent: '#E05638' },
+    palette: { primary: '#111827', secondary: '#4B5563', accent: '#E94560' },
     typography: 'var(--font-quicksand)',
     restrictions: []
   }
@@ -173,9 +173,9 @@ export default function OnboardingPage() {
     <main className="app-container" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', padding: '24px' }}>
       {/* Indicador de Progreso (Pasos 1 a 9) */}
       <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--accent-color, #E05638)' }}>Paso {step} de 9</span>
+        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--coral, #E94560)' }}>Paso {step} de 9</span>
         <div style={{ flex: 1, height: '6px', background: '#E5E7EB', borderRadius: '3px', margin: '0 12px' }}>
-          <div style={{ width: `${(step / 9) * 100}%`, height: '100%', background: 'var(--accent-color, #E05638)', borderRadius: '3px', transition: 'width 0.3s' }} />
+          <div style={{ width: `${(step / 9) * 100}%`, height: '100%', background: 'var(--coral, #E94560)', borderRadius: '3px', transition: 'width 0.3s' }} />
         </div>
       </div>
 
@@ -184,13 +184,13 @@ export default function OnboardingPage() {
         {/* PANTALLA 1: Bienvenida */}
         {step === 1 && (
           <div style={{ textAlign: 'center' }}>
-            <h1 style={{ fontFamily: 'var(--font-quicksand)', fontSize: '2rem', color: '#111827', marginBottom: '16px' }}>¡Bienvenido a AMVI! 🚀</h1>
+            <h1 style={{ fontFamily: 'var(--font-quicksand)', fontSize: '2rem', color: '#111827', marginBottom: '16px' }}>Bienvenido a AMVI</h1>
             <p style={{ color: '#4B5563', fontSize: '1.05rem', lineHeight: '1.6', marginBottom: '32px' }}>
-              En solo 2 minutos voy a conocer tu marca para empezar a crear contenido ajustado a tu estilo e identidad.
+              En 2 minutos voy a conocer tu marca para empezar a crear contenido ajustado a tu estilo e identidad.
             </p>
             <button
               onClick={() => setStep(2)}
-              style={{ width: '100%', padding: '16px', background: 'var(--accent-color, #E05638)', color: '#FFFFFF', border: 'none', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 600, cursor: 'pointer' }}
+              style={{ width: '100%', padding: '16px', background: 'var(--coral, #E94560)', color: '#FFFFFF', border: 'none', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 600, cursor: 'pointer' }}
             >
               Empecemos
             </button>
@@ -217,7 +217,7 @@ export default function OnboardingPage() {
             <button
               onClick={handleAnalyzeNegocio}
               disabled={loading || !descNegocio.trim()}
-              style={{ width: '100%', padding: '14px', background: 'var(--accent-color, #E05638)', color: '#FFFFFF', border: 'none', borderRadius: '12px', fontSize: '1rem', fontWeight: 600, cursor: 'pointer' }}
+              style={{ width: '100%', padding: '14px', background: 'var(--coral, #E94560)', color: '#FFFFFF', border: 'none', borderRadius: '12px', fontSize: '1rem', fontWeight: 600, cursor: 'pointer' }}
             >
               {loading ? 'Analizando tu negocio…' : 'Siguiente'}
             </button>
@@ -232,7 +232,7 @@ export default function OnboardingPage() {
             {rubroConfianza === 'alta' && rubroDetected !== 'otro' ? (
               <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', padding: '20px', borderRadius: '12px', marginBottom: '24px', textAlign: 'center' }}>
                 <p style={{ fontSize: '1.1rem', color: '#166534', margin: '0 0 16px 0' }}>
-                  ¡Genial! Detectamos que tu negocio es de <strong>{rubroDetected.toUpperCase()}</strong>. ¿Es así?
+                  Detectamos que tu negocio es de <strong>{rubroDetected.toUpperCase()}</strong>. ¿Es así?
                 </p>
                 <div style={{ display: 'flex', gap: '12px' }}>
                   <button
@@ -254,15 +254,15 @@ export default function OnboardingPage() {
                 <p style={{ color: '#4B5563', marginBottom: '16px' }}>Seleccioná la categoría que mejor representa a tu marca:</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
                   {[
-                    { key: 'veterinaria', label: '🐾 Veterinaria / Mascotas' },
-                    { key: 'inmobiliaria', label: '🏠 Inmobiliaria / Propiedades' },
-                    { key: 'crochet', label: '🧶 Crochet / Artesanías' },
-                    { key: 'otro', label: '✨ Otro rubro' }
+                    { key: 'veterinaria', label: 'Veterinaria / Mascotas' },
+                    { key: 'inmobiliaria', label: 'Inmobiliaria / Propiedades' },
+                    { key: 'crochet', label: 'Crochet / Artesanías' },
+                    { key: 'otro', label: 'Otro rubro' }
                   ].map((r) => (
                     <button
                       key={r.key}
                       onClick={() => { setRubroConfirmado(r.key); setStep(4); }}
-                      style={{ padding: '14px', background: rubroConfirmado === r.key ? '#FEF2F2' : '#FFFFFF', border: `2px solid ${rubroConfirmado === r.key ? '#E05638' : '#E5E7EB'}`, borderRadius: '10px', textAlign: 'left', fontWeight: 600, cursor: 'pointer' }}
+                      style={{ padding: '14px', background: rubroConfirmado === r.key ? '#FFF0F2' : '#FFFFFF', border: `2px solid ${rubroConfirmado === r.key ? '#E94560' : '#E5E7EB'}`, borderRadius: '10px', textAlign: 'left', fontWeight: 600, cursor: 'pointer' }}
                     >
                       {r.label}
                     </button>
@@ -284,13 +284,13 @@ export default function OnboardingPage() {
             <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
               <button
                 onClick={() => setColorMode('recommend')}
-                style={{ flex: 1, padding: '14px', background: colorMode === 'recommend' ? '#FEF2F2' : '#FFF', border: `2px solid ${colorMode === 'recommend' ? '#E05638' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}
+                style={{ flex: 1, padding: '14px', background: colorMode === 'recommend' ? '#FFF0F2' : '#FFF', border: `2px solid ${colorMode === 'recommend' ? '#E94560' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}
               >
-                Recomendame ✨
+                Recomendame
               </button>
               <button
                 onClick={() => setColorMode('custom')}
-                style={{ flex: 1, padding: '14px', background: colorMode === 'custom' ? '#FEF2F2' : '#FFF', border: `2px solid ${colorMode === 'custom' ? '#E05638' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}
+                style={{ flex: 1, padding: '14px', background: colorMode === 'custom' ? '#FFF0F2' : '#FFF', border: `2px solid ${colorMode === 'custom' ? '#E94560' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}
               >
                 Tengo mis colores
               </button>
@@ -313,7 +313,7 @@ export default function OnboardingPage() {
               </div>
             )}
 
-            <button onClick={() => setStep(5)} style={{ width: '100%', padding: '14px', background: 'var(--accent-color, #E05638)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
+            <button onClick={() => setStep(5)} style={{ width: '100%', padding: '14px', background: 'var(--coral, #E94560)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
               Siguiente
             </button>
           </div>
@@ -328,10 +328,10 @@ export default function OnboardingPage() {
             </p>
 
             <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
-              <button onClick={() => setFontMode('recommend')} style={{ flex: 1, padding: '14px', background: fontMode === 'recommend' ? '#FEF2F2' : '#FFF', border: `2px solid ${fontMode === 'recommend' ? '#E05638' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}>
-                Recomendame ✨
+              <button onClick={() => setFontMode('recommend')} style={{ flex: 1, padding: '14px', background: fontMode === 'recommend' ? '#FFF0F2' : '#FFF', border: `2px solid ${fontMode === 'recommend' ? '#E94560' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}>
+                Recomendame
               </button>
-              <button onClick={() => setFontMode('custom')} style={{ flex: 1, padding: '14px', background: fontMode === 'custom' ? '#FEF2F2' : '#FFF', border: `2px solid ${fontMode === 'custom' ? '#E05638' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}>
+              <button onClick={() => setFontMode('custom')} style={{ flex: 1, padding: '14px', background: fontMode === 'custom' ? '#FFF0F2' : '#FFF', border: `2px solid ${fontMode === 'custom' ? '#E94560' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}>
                 Elegir fuente
               </button>
             </div>
@@ -344,7 +344,7 @@ export default function OnboardingPage() {
               </select>
             )}
 
-            <button onClick={() => setStep(6)} style={{ width: '100%', padding: '14px', background: 'var(--accent-color, #E05638)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
+            <button onClick={() => setStep(6)} style={{ width: '100%', padding: '14px', background: 'var(--coral, #E94560)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
               Siguiente
             </button>
           </div>
@@ -359,10 +359,10 @@ export default function OnboardingPage() {
             </p>
 
             <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
-              <button onClick={() => setLogoOption('later')} style={{ flex: 1, padding: '14px', background: logoOption === 'later' ? '#FEF2F2' : '#FFF', border: `2px solid ${logoOption === 'later' ? '#E05638' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}>
+              <button onClick={() => setLogoOption('later')} style={{ flex: 1, padding: '14px', background: logoOption === 'later' ? '#FFF0F2' : '#FFF', border: `2px solid ${logoOption === 'later' ? '#E94560' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}>
                 Lo subo después
               </button>
-              <button onClick={() => setLogoOption('url')} style={{ flex: 1, padding: '14px', background: logoOption === 'url' ? '#FEF2F2' : '#FFF', border: `2px solid ${logoOption === 'url' ? '#E05638' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}>
+              <button onClick={() => setLogoOption('url')} style={{ flex: 1, padding: '14px', background: logoOption === 'url' ? '#FFF0F2' : '#FFF', border: `2px solid ${logoOption === 'url' ? '#E94560' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}>
                 Poner URL del Logo
               </button>
             </div>
@@ -371,7 +371,7 @@ export default function OnboardingPage() {
               <input type="url" placeholder="https://tu-sitio.com/logo.png" value={logoUrl} onChange={(e) => setLogoUrl(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #E5E7EB', marginBottom: '20px' }} />
             )}
 
-            <button onClick={() => setStep(7)} style={{ width: '100%', padding: '14px', background: 'var(--accent-color, #E05638)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
+            <button onClick={() => setStep(7)} style={{ width: '100%', padding: '14px', background: 'var(--coral, #E94560)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
               Siguiente
             </button>
           </div>
@@ -394,7 +394,7 @@ export default function OnboardingPage() {
               style={{ width: '100%', padding: '14px', background: 'var(--input-bg, #F7F6F2)', border: '1px solid #E5E7EB', borderRadius: '12px', fontSize: '1rem', marginBottom: '20px', outline: 'none' }}
             />
 
-            <button onClick={handleAnalyzePersonalidad} disabled={loading} style={{ width: '100%', padding: '14px', background: 'var(--accent-color, #E05638)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
+            <button onClick={handleAnalyzePersonalidad} disabled={loading} style={{ width: '100%', padding: '14px', background: 'var(--coral, #E94560)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
               {loading ? 'Infiriendo personalidad…' : 'Siguiente'}
             </button>
           </div>
@@ -417,7 +417,7 @@ export default function OnboardingPage() {
               style={{ width: '100%', padding: '14px', background: 'var(--input-bg, #F7F6F2)', border: '1px solid #E5E7EB', borderRadius: '12px', fontSize: '1rem', marginBottom: '20px', outline: 'none' }}
             />
 
-            <button onClick={() => setStep(9)} style={{ width: '100%', padding: '14px', background: 'var(--accent-color, #E05638)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
+            <button onClick={() => setStep(9)} style={{ width: '100%', padding: '14px', background: 'var(--coral, #E94560)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
               Ver Resumen
             </button>
           </div>
@@ -426,7 +426,7 @@ export default function OnboardingPage() {
         {/* PANTALLA 9: Resumen y Confirmación */}
         {step === 9 && (
           <div>
-            <h2 style={{ fontSize: '1.5rem', color: '#111827', marginBottom: '8px' }}>¡Todo listo! Confirmemos tu Bóveda</h2>
+            <h2 style={{ fontSize: '1.5rem', color: '#111827', marginBottom: '8px' }}>Confirmemos tu Bóveda</h2>
             <p style={{ color: '#6B7280', fontSize: '0.9rem', marginBottom: '20px' }}>Esto es lo que aprendimos de tu negocio:</p>
 
             <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '16px', marginBottom: '24px', fontSize: '0.9rem', display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -441,9 +441,9 @@ export default function OnboardingPage() {
             <button
               onClick={handleFinishOnboarding}
               disabled={loading}
-              style={{ width: '100%', padding: '16px', background: 'var(--accent-color, #E05638)', color: '#FFF', border: 'none', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 600, cursor: 'pointer' }}
+              style={{ width: '100%', padding: '16px', background: 'var(--coral, #E94560)', color: '#FFF', border: 'none', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 600, cursor: 'pointer' }}
             >
-              {loading ? 'Guardando tu Bóveda…' : 'Confirmar y Empezar 🚀'}
+              {loading ? 'Guardando tu Bóveda…' : 'Confirmar y Empezar'}
             </button>
           </div>
         )}

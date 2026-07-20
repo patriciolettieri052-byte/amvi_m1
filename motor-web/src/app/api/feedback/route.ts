@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server';
-import { supabase, getAuthUser } from '@/lib/supabase';
+import { getAuthUser, getSupabaseServerClient } from '@/lib/supabase';
 import { getBoveda } from '@/lib/runner';
 
 export async function POST(request: Request) {
   try {
+    const authHeader = request.headers.get('Authorization') || '';
+    const token = authHeader.replace('Bearer ', '');
     const user = await getAuthUser(request);
-    if (!user) {
+
+    if (!user || !token) {
       return NextResponse.json(
         { error: 'No autorizado. Iniciá sesión nuevamente.' },
         { status: 401 }
@@ -33,8 +36,10 @@ export async function POST(request: Request) {
       timestamp
     };
 
+    const client = getSupabaseServerClient(token);
+
     // 1. Obtener la bóveda actual del usuario autenticado
-    const boveda = await getBoveda(user.id);
+    const boveda = await getBoveda(user.id, token);
     const aprendizaje = boveda.aprendizaje || { approved: [], rejected: [], notes: [] };
 
     // 2. Insertar en el historial
@@ -50,8 +55,8 @@ export async function POST(request: Request) {
       }
     }
 
-    // 3. Actualizar en Supabase
-    const { error } = await supabase
+    // 3. Actualizar en Supabase con el cliente con RLS
+    const { error } = await client
       .from('marcas_boveda')
       .update({ aprendizaje, updated_at: timestamp })
       .eq('tenant_id', user.id);
