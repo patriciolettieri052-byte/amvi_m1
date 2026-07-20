@@ -22,7 +22,7 @@ const DEFAULT_ADN: Record<string, any> = {
     restrictions: ['evitar palabras de producción industrial', 'no presionar a la venta dura']
   },
   otro: {
-    palette: { primary: '#111827', secondary: '#4B5563', accent: '#E94560' },
+    palette: { primary: '#111827', secondary: '#4B5563', accent: '#FF4F4F' },
     typography: 'var(--font-quicksand)',
     restrictions: []
   }
@@ -173,9 +173,9 @@ export default function OnboardingPage() {
     <main className="app-container" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', padding: '24px' }}>
       {/* Indicador de Progreso (Pasos 1 a 9) */}
       <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--coral, #E94560)' }}>Paso {step} de 9</span>
+        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--coral, #FF4F4F)' }}>Paso {step} de 9</span>
         <div style={{ flex: 1, height: '6px', background: '#E5E7EB', borderRadius: '3px', margin: '0 12px' }}>
-          <div style={{ width: `${(step / 9) * 100}%`, height: '100%', background: 'var(--coral, #E94560)', borderRadius: '3px', transition: 'width 0.3s' }} />
+          <div style={{ width: `${(step / 9) * 100}%`, height: '100%', background: 'var(--coral, #FF4F4F)', borderRadius: '3px', transition: 'width 0.3s' }} />
         </div>
       </div>
 
@@ -190,7 +190,7 @@ export default function OnboardingPage() {
             </p>
             <button
               onClick={() => setStep(2)}
-              style={{ width: '100%', padding: '16px', background: 'var(--coral, #E94560)', color: '#FFFFFF', border: 'none', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 600, cursor: 'pointer' }}
+              style={{ width: '100%', padding: '16px', background: 'var(--coral, #FF4F4F)', color: '#FFFFFF', border: 'none', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 600, cursor: 'pointer' }}
             >
               Empecemos
             </button>
@@ -217,7 +217,7 @@ export default function OnboardingPage() {
             <button
               onClick={handleAnalyzeNegocio}
               disabled={loading || !descNegocio.trim()}
-              style={{ width: '100%', padding: '14px', background: 'var(--coral, #E94560)', color: '#FFFFFF', border: 'none', borderRadius: '12px', fontSize: '1rem', fontWeight: 600, cursor: 'pointer' }}
+              style={{ width: '100%', padding: '14px', background: 'var(--coral, #FF4F4F)', color: '#FFFFFF', border: 'none', borderRadius: '12px', fontSize: '1rem', fontWeight: 600, cursor: 'pointer' }}
             >
               {loading ? 'Analizando tu negocio…' : 'Siguiente'}
             </button>
@@ -262,7 +262,7 @@ export default function OnboardingPage() {
                     <button
                       key={r.key}
                       onClick={() => { setRubroConfirmado(r.key); setStep(4); }}
-                      style={{ padding: '14px', background: rubroConfirmado === r.key ? '#FFF0F2' : '#FFFFFF', border: `2px solid ${rubroConfirmado === r.key ? '#E94560' : '#E5E7EB'}`, borderRadius: '10px', textAlign: 'left', fontWeight: 600, cursor: 'pointer' }}
+                      style={{ padding: '14px', background: rubroConfirmado === r.key ? '#FFF0F2' : '#FFFFFF', border: `2px solid ${rubroConfirmado === r.key ? '#FF4F4F' : '#E5E7EB'}`, borderRadius: '10px', textAlign: 'left', fontWeight: 600, cursor: 'pointer' }}
                     >
                       {r.label}
                     </button>
@@ -284,13 +284,13 @@ export default function OnboardingPage() {
             <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
               <button
                 onClick={() => setColorMode('recommend')}
-                style={{ flex: 1, padding: '14px', background: colorMode === 'recommend' ? '#FFF0F2' : '#FFF', border: `2px solid ${colorMode === 'recommend' ? '#E94560' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}
+                style={{ flex: 1, padding: '14px', background: colorMode === 'recommend' ? '#FFF0F2' : '#FFF', border: `2px solid ${colorMode === 'recommend' ? '#FF4F4F' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}
               >
                 Recomendame
               </button>
               <button
                 onClick={() => setColorMode('custom')}
-                style={{ flex: 1, padding: '14px', background: colorMode === 'custom' ? '#FFF0F2' : '#FFF', border: `2px solid ${colorMode === 'custom' ? '#E94560' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}
+                style={{ flex: 1, padding: '14px', background: colorMode === 'custom' ? '#FFF0F2' : '#FFF', border: `2px solid ${colorMode === 'custom' ? '#FF4F4F' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}
               >
                 Tengo mis colores
               </button>
@@ -313,7 +313,7 @@ export default function OnboardingPage() {
               </div>
             )}
 
-            <button onClick={() => setStep(5)} style={{ width: '100%', padding: '14px', background: 'var(--coral, #E94560)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
+            <button onClick={() => setStep(5)} style={{ width: '100%', padding: '14px', background: 'var(--coral, #FF4F4F)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
               Siguiente
             </button>
           </div>
@@ -328,10 +328,10 @@ export default function OnboardingPage() {
             </p>
 
             <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
-              <button onClick={() => setFontMode('recommend')} style={{ flex: 1, padding: '14px', background: fontMode === 'recommend' ? '#FFF0F2' : '#FFF', border: `2px solid ${fontMode === 'recommend' ? '#E94560' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}>
+              <button onClick={() => setFontMode('recommend')} style={{ flex: 1, padding: '14px', background: fontMode === 'recommend' ? '#FFF0F2' : '#FFF', border: `2px solid ${fontMode === 'recommend' ? '#FF4F4F' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}>
                 Recomendame
               </button>
-              <button onClick={() => setFontMode('custom')} style={{ flex: 1, padding: '14px', background: fontMode === 'custom' ? '#FFF0F2' : '#FFF', border: `2px solid ${fontMode === 'custom' ? '#E94560' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}>
+              <button onClick={() => setFontMode('custom')} style={{ flex: 1, padding: '14px', background: fontMode === 'custom' ? '#FFF0F2' : '#FFF', border: `2px solid ${fontMode === 'custom' ? '#FF4F4F' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}>
                 Elegir fuente
               </button>
             </div>
@@ -344,7 +344,7 @@ export default function OnboardingPage() {
               </select>
             )}
 
-            <button onClick={() => setStep(6)} style={{ width: '100%', padding: '14px', background: 'var(--coral, #E94560)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
+            <button onClick={() => setStep(6)} style={{ width: '100%', padding: '14px', background: 'var(--coral, #FF4F4F)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
               Siguiente
             </button>
           </div>
@@ -359,10 +359,10 @@ export default function OnboardingPage() {
             </p>
 
             <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
-              <button onClick={() => setLogoOption('later')} style={{ flex: 1, padding: '14px', background: logoOption === 'later' ? '#FFF0F2' : '#FFF', border: `2px solid ${logoOption === 'later' ? '#E94560' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}>
+              <button onClick={() => setLogoOption('later')} style={{ flex: 1, padding: '14px', background: logoOption === 'later' ? '#FFF0F2' : '#FFF', border: `2px solid ${logoOption === 'later' ? '#FF4F4F' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}>
                 Lo subo después
               </button>
-              <button onClick={() => setLogoOption('url')} style={{ flex: 1, padding: '14px', background: logoOption === 'url' ? '#FFF0F2' : '#FFF', border: `2px solid ${logoOption === 'url' ? '#E94560' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}>
+              <button onClick={() => setLogoOption('url')} style={{ flex: 1, padding: '14px', background: logoOption === 'url' ? '#FFF0F2' : '#FFF', border: `2px solid ${logoOption === 'url' ? '#FF4F4F' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}>
                 Poner URL del Logo
               </button>
             </div>
@@ -371,7 +371,7 @@ export default function OnboardingPage() {
               <input type="url" placeholder="https://tu-sitio.com/logo.png" value={logoUrl} onChange={(e) => setLogoUrl(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #E5E7EB', marginBottom: '20px' }} />
             )}
 
-            <button onClick={() => setStep(7)} style={{ width: '100%', padding: '14px', background: 'var(--coral, #E94560)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
+            <button onClick={() => setStep(7)} style={{ width: '100%', padding: '14px', background: 'var(--coral, #FF4F4F)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
               Siguiente
             </button>
           </div>
@@ -394,7 +394,7 @@ export default function OnboardingPage() {
               style={{ width: '100%', padding: '14px', background: 'var(--input-bg, #F7F6F2)', border: '1px solid #E5E7EB', borderRadius: '12px', fontSize: '1rem', marginBottom: '20px', outline: 'none' }}
             />
 
-            <button onClick={handleAnalyzePersonalidad} disabled={loading} style={{ width: '100%', padding: '14px', background: 'var(--coral, #E94560)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
+            <button onClick={handleAnalyzePersonalidad} disabled={loading} style={{ width: '100%', padding: '14px', background: 'var(--coral, #FF4F4F)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
               {loading ? 'Infiriendo personalidad…' : 'Siguiente'}
             </button>
           </div>
@@ -417,7 +417,7 @@ export default function OnboardingPage() {
               style={{ width: '100%', padding: '14px', background: 'var(--input-bg, #F7F6F2)', border: '1px solid #E5E7EB', borderRadius: '12px', fontSize: '1rem', marginBottom: '20px', outline: 'none' }}
             />
 
-            <button onClick={() => setStep(9)} style={{ width: '100%', padding: '14px', background: 'var(--coral, #E94560)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
+            <button onClick={() => setStep(9)} style={{ width: '100%', padding: '14px', background: 'var(--coral, #FF4F4F)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
               Ver Resumen
             </button>
           </div>
@@ -441,7 +441,7 @@ export default function OnboardingPage() {
             <button
               onClick={handleFinishOnboarding}
               disabled={loading}
-              style={{ width: '100%', padding: '16px', background: 'var(--coral, #E94560)', color: '#FFF', border: 'none', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 600, cursor: 'pointer' }}
+              style={{ width: '100%', padding: '16px', background: 'var(--coral, #FF4F4F)', color: '#FFF', border: 'none', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 600, cursor: 'pointer' }}
             >
               {loading ? 'Guardando tu Bóveda…' : 'Confirmar y Empezar'}
             </button>

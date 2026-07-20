@@ -247,7 +247,7 @@ export default function EnginePage() {
       <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '12px', borderBottom: '1px solid #E5E7EB', marginBottom: '16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <h1 style={{ fontFamily: 'var(--font-quicksand)', fontSize: '1.25rem', margin: 0, fontWeight: 700 }}>AMVI</h1>
-          <span style={{ fontSize: '0.75rem', background: '#FFF0F2', color: 'var(--coral, #E94560)', padding: '2px 8px', borderRadius: '12px', fontWeight: 600 }}>BETA</span>
+          <span style={{ fontSize: '0.75rem', background: '#FFF0F2', color: 'var(--coral, #FF4F4F)', padding: '2px 8px', borderRadius: '12px', fontWeight: 600 }}>BETA</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <span style={{ fontSize: '0.8rem', color: piecesList.length >= 5 ? '#991B1B' : '#4B5563', fontWeight: 600 }}>
@@ -274,7 +274,7 @@ export default function EnginePage() {
                       maxWidth: '85%',
                       padding: '12px 16px',
                       borderRadius: '16px',
-                      background: m.sender === 'me' ? 'var(--coral, #E94560)' : '#F3F4F6',
+                      background: m.sender === 'me' ? 'var(--coral, #FF4F4F)' : '#F3F4F6',
                       color: m.sender === 'me' ? '#FFFFFF' : '#111827',
                       fontSize: '0.95rem',
                       lineHeight: '1.5'
@@ -299,7 +299,7 @@ export default function EnginePage() {
                 <button
                   onClick={handleSendMessage}
                   disabled={piecesList.length >= 5 || !pedidoInput.trim()}
-                  style={{ padding: '14px 20px', background: 'var(--coral, #E94560)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}
+                  style={{ padding: '14px 20px', background: 'var(--coral, #FF4F4F)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}
                 >
                   Enviar
                 </button>
@@ -309,7 +309,7 @@ export default function EnginePage() {
 
           {screenState === 'loading' && (
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-              <div style={{ width: '50px', height: '50px', border: '4px solid #E5E7EB', borderTopColor: 'var(--coral, #E94560)', borderRadius: '50%', animation: 'spin 1s linear infinite', marginBottom: '20px' }} />
+              <div style={{ width: '50px', height: '50px', border: '4px solid #E5E7EB', borderTopColor: 'var(--coral, #FF4F4F)', borderRadius: '50%', animation: 'spin 1s linear infinite', marginBottom: '20px' }} />
               <h2 style={{ fontSize: '1.2rem', color: '#111827', marginBottom: '8px' }}>{genStepText}</h2>
               <p style={{ color: '#6B7280', fontSize: '0.85rem' }}>Procesando con Agente Copy y Agente Arte</p>
             </div>
@@ -352,7 +352,7 @@ export default function EnginePage() {
           {piecesList.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '40px 20px', color: '#6B7280' }}>
               <p>Aún no generaste piezas.</p>
-              <button onClick={() => setActiveTab('creacion')} style={{ marginTop: '12px', padding: '10px 20px', background: 'var(--coral, #E94560)', color: '#FFF', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: 'pointer' }}>
+              <button onClick={() => setActiveTab('creacion')} style={{ marginTop: '12px', padding: '10px 20px', background: 'var(--coral, #FF4F4F)', color: '#FFF', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: 'pointer' }}>
                 Crear mi primera pieza
               </button>
             </div>
@@ -389,7 +389,7 @@ export default function EnginePage() {
               <div style={{ display: 'flex', gap: '8px' }}>
                 <div style={{ flex: 1, height: '24px', borderRadius: '6px', background: identidad.palette?.primary || '#111827' }} />
                 <div style={{ flex: 1, height: '24px', borderRadius: '6px', background: identidad.palette?.secondary || '#4B5563' }} />
-                <div style={{ flex: 1, height: '24px', borderRadius: '6px', background: identidad.palette?.accent || '#E94560' }} />
+                <div style={{ flex: 1, height: '24px', borderRadius: '6px', background: identidad.palette?.accent || '#FF4F4F' }} />
               </div>
             </div>
 
@@ -451,7 +451,7 @@ export default function EnginePage() {
               style={{ width: '100%', padding: '12px', background: 'var(--input-bg, #F7F6F2)', border: '1px solid #E5E7EB', borderRadius: '10px', marginBottom: '16px' }}
             />
             <div style={{ display: 'flex', gap: '8px' }}>
-              <button onClick={handleSendFeedbackNote} style={{ flex: 1, padding: '12px', background: 'var(--coral, #E94560)', color: '#FFF', border: 'none', borderRadius: '8px', fontWeight: 600 }}>
+              <button onClick={handleSendFeedbackNote} style={{ flex: 1, padding: '12px', background: 'var(--coral, #FF4F4F)', color: '#FFF', border: 'none', borderRadius: '8px', fontWeight: 600 }}>
                 Guardar Nota
               </button>
               <button onClick={() => setShowFeedbackModal(false)} style={{ padding: '12px', background: '#E5E7EB', border: 'none', borderRadius: '8px', fontWeight: 600 }}>

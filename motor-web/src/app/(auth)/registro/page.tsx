@@ -64,7 +64,7 @@ export default function RegistroPage() {
         {successMsg ? (
           <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', color: '#166534', padding: '16px', borderRadius: '10px', fontSize: '0.95rem', textAlign: 'center', lineHeight: '1.5' }}>
             <p style={{ margin: '0 0 12px 0', fontWeight: 600 }}>{successMsg}</p>
-            <Link href="/login" style={{ color: 'var(--coral, #E94560)', fontWeight: 700, textDecoration: 'none' }}>
+            <Link href="/login" style={{ color: 'var(--coral, #FF4F4F)', fontWeight: 700, textDecoration: 'none' }}>
               Ir al Login
             </Link>
           </div>
@@ -97,7 +97,7 @@ export default function RegistroPage() {
             <button
               type="submit"
               disabled={loading}
-              style={{ width: '100%', padding: '14px', background: 'var(--coral, #E94560)', color: '#FFFFFF', border: 'none', borderRadius: '10px', fontSize: '1rem', fontWeight: '600', cursor: 'pointer', marginTop: '8px', transition: 'all 0.2s' }}
+              style={{ width: '100%', padding: '14px', background: 'var(--coral, #FF4F4F)', color: '#FFFFFF', border: 'none', borderRadius: '10px', fontSize: '1rem', fontWeight: '600', cursor: 'pointer', marginTop: '8px', transition: 'all 0.2s' }}
             >
               {loading ? 'Creando tu cuenta…' : 'Crear Cuenta y Comenzar'}
             </button>
@@ -106,7 +106,7 @@ export default function RegistroPage() {
 
         <div style={{ marginTop: '20px', textAlign: 'center', fontSize: '0.875rem', color: '#6B7280' }}>
           ¿Ya tenés cuenta?{' '}
-          <Link href="/login" style={{ color: 'var(--coral, #E94560)', fontWeight: 600, textDecoration: 'none' }}>
+          <Link href="/login" style={{ color: 'var(--coral, #FF4F4F)', fontWeight: 600, textDecoration: 'none' }}>
             Iniciá sesión acá
           </Link>
         </div>
