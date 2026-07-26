@@ -83,7 +83,28 @@ export async function processPieceDesignAsync(params: {
     tipo
   });
 
-  // 4. Renderizar PNG con Puppeteer y subir a Supabase Storage
+  // 4. Intentar delegar el renderizado asíncrono directamente al worker de Railway (Railway actualiza DB y Storage sin timeout en Vercel)
+  const { triggerRailwayAsyncRender } = await import('./render/client');
+  const triggered = await triggerRailwayAsyncRender({
+    piezaId: params.piezaId,
+    tenantId: params.tenantId,
+    vertical,
+    art: artJSON,
+    copy: copyJSON,
+    identidad: boveda.identidad
+  });
+
+  if (triggered) {
+    // Railway asumió la tarea y actualizará la DB a 'disenada' cuando termine
+    await client
+      .from('piezas')
+      .update({ copy_json: copyJSON, arte_json: artJSON })
+      .eq('id', params.piezaId);
+
+    return { pieza_id: params.piezaId, status: 'processing_in_railway' };
+  }
+
+  // Fallback local/directo si Railway no está disponible
   const cdnUrl = await renderGraphicAndUpload({
     piezaId: params.piezaId,
     tenantId: params.tenantId,
@@ -94,7 +115,6 @@ export async function processPieceDesignAsync(params: {
     token: params.token
   });
 
-  // 5. Actualizar la pieza a estado 'disenada' con la URL del CDN
   await client
     .from('piezas')
     .update({

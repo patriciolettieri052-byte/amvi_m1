@@ -1,0 +1,126 @@
+{
+  "veterinaria": {
+    "vertical": "veterinaria",
+    "es_placeholder": false,
+    "version": "1.0-curado-experto",
+    "temas": [
+      {
+        "mes": 1,
+        "tema": "Golpe de calor en perros y gatos: síntomas de alerta y cómo prevenirlos en verano",
+        "tipo": "educativo",
+        "prioridad": "alta"
+      },
+      {
+        "mes": 1,
+        "tema": "Promo Vacu-Verano: 15% off en vacunas quintuple y rabia antes de viajar",
+        "tipo": "promo",
+        "prioridad": "alta"
+      },
+      {
+        "mes": 1,
+        "tema": "Nuevo servicio de ecografía y diagnóstico por imágenes en la clínica",
+        "tipo": "novedad",
+        "prioridad": "media"
+      },
+      {
+        "mes": 2,
+        "tema": "Desparasitación interna y externa: por qué los mosquitos y pulgas aumentan ahora",
+        "tipo": "educativo",
+        "prioridad": "alta"
+      },
+      {
+        "mes": 2,
+        "tema": "Combo Protección Total: Pipeta + Pastilla antipulgas con descuento",
+        "tipo": "promo",
+        "prioridad": "alta"
+      },
+      {
+        "mes": 3,
+        "tema": "Salud dental canina: cómo evitar el sarro y el mal aliento de tu mascota",
+        "tipo": "educativo",
+        "prioridad": "media"
+      }
+    ]
+  },
+  "inmobiliaria": {
+    "vertical": "inmobiliaria",
+    "es_placeholder": false,
+    "version": "1.0-curado-experto",
+    "temas": [
+      {
+        "mes": 1,
+        "tema": "Oportunidad de inversión: departamentos de 2 ambientes con alta rentabilidad temporal",
+        "tipo": "promo",
+        "prioridad": "alta"
+      },
+      {
+        "mes": 1,
+        "tema": "Guía útil: 5 documentos clave que tenés que revisar antes de firmar una reserva",
+        "tipo": "educativo",
+        "prioridad": "alta"
+      },
+      {
+        "mes": 1,
+        "tema": "Lanzamiento exclusivo: Pozo de categoría en zona residencial con financiación en cuotas",
+        "tipo": "novedad",
+        "prioridad": "media"
+      },
+      {
+        "mes": 2,
+        "tema": "Casas con parque y pileta: la tendencia de búsqueda que más crece este año",
+        "tipo": "educativo",
+        "prioridad": "media"
+      }
+    ]
+  },
+  "crochet": {
+    "vertical": "crochet",
+    "es_placeholder": false,
+    "version": "1.0-curado-experto",
+    "temas": [
+      {
+        "mes": 1,
+        "tema": "Cómo cuidar tus amigurumis y prendas tejidas a mano para que duren años impecables",
+        "tipo": "educativo",
+        "prioridad": "alta"
+      },
+      {
+        "mes": 1,
+        "tema": "Combo Artesanal de Temporada: Llévate 2 piezas tejidas con 20% off en la segunda unidad",
+        "tipo": "promo",
+        "prioridad": "alta"
+      },
+      {
+        "mes": 1,
+        "tema": "Lanzamiento de la nueva paleta de hilos 100% algodón orgánico en tonos pastel",
+        "tipo": "novedad",
+        "prioridad": "media"
+      }
+    ]
+  },
+  "otro": {
+    "vertical": "otro",
+    "es_placeholder": false,
+    "version": "1.0-curado-experto",
+    "temas": [
+      {
+        "mes": 1,
+        "tema": "Guía práctica: Claves para aprovechar al máximo nuestros productos y servicios este mes",
+        "tipo": "educativo",
+        "prioridad": "alta"
+      },
+      {
+        "mes": 1,
+        "tema": "Beneficio exclusivo de la semana: Descuento especial para nuestros clientes habituales",
+        "tipo": "promo",
+        "prioridad": "alta"
+      },
+      {
+        "mes": 1,
+        "tema": "Novedad destacada: Incorporamos nuevas opciones de atención y facilidades",
+        "tipo": "novedad",
+        "prioridad": "media"
+      }
+    ]
+  }
+}

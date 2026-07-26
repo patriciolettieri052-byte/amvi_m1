@@ -10,6 +10,60 @@ export function runBackgroundJob(taskPromise: Promise<any>) {
   }
 }
 
+// Disparar Renderizado Asíncrono en Railway (Railway asume la renderización, subida a Storage y actualización de la DB)
+export async function triggerRailwayAsyncRender(params: {
+  piezaId: string;
+  tenantId: string;
+  vertical: string;
+  art: ArtResponse;
+  copy: CopyResponse;
+  identidad: any;
+}): Promise<boolean> {
+  const renderServiceUrl = process.env.RENDER_SERVICE_URL || 'http://localhost:3001';
+  
+  let foto_url = '';
+  if (params.vertical === 'veterinaria') {
+    foto_url = 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=1080&auto=format&fit=crop';
+  } else if (params.vertical === 'inmobiliaria') {
+    foto_url = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1080&auto=format&fit=crop';
+  } else {
+    foto_url = 'http://localhost:3000/crochet.webp';
+  }
+
+  const renderJobPayload = {
+    pieza_id: params.piezaId,
+    tenant_id: params.tenantId,
+    template: params.art.template,
+    bg: params.art.bg,
+    text_color: params.art.text_color,
+    accent_color: params.art.accent_color,
+    title_size: params.art.title_size,
+    logo_position: params.art.logo_position,
+    highlight_words: params.art.highlight_words,
+    foto_url: foto_url,
+    copy: {
+      titulo: params.copy.titulo,
+      subtitulo: params.copy.subtitulo,
+      cta: params.copy.cta
+    },
+    logo_url: params.identidad?.logo_url || 'https://placehold.co/400x400/111827/ffffff?text=AMVI',
+    font: params.identidad?.typography || 'var(--font-quicksand)'
+  };
+
+  try {
+    const response = await fetch(`${renderServiceUrl}/render-async`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(renderJobPayload)
+    });
+    return response.ok;
+  } catch (err) {
+    console.error('Fallo al invocar /render-async en Railway:', err);
+    return false;
+  }
+}
+
+// Fallback Renderizado Síncrono Tradicional
 export async function renderGraphicAndUpload(params: {
   piezaId: string;
   tenantId: string;
@@ -61,7 +115,6 @@ export async function renderGraphicAndUpload(params: {
   const arrayBuffer = await response.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
 
-  // Subir el PNG generado a Supabase Storage piezas-bucket
   const client = params.token ? getSupabaseServerClient(params.token) : supabase;
   const storagePath = `tenants/${params.tenantId}/${params.piezaId}.png`;
 
@@ -74,7 +127,6 @@ export async function renderGraphicAndUpload(params: {
 
   if (uploadErr) {
     console.error('Error al subir PNG a Storage piezas-bucket:', uploadErr);
-    // Fallback a Data Base64 si falla Storage
     return `data:image/png;base64,${buffer.toString('base64')}`;
   }
 

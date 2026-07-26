@@ -3,6 +3,7 @@ const cors = require('cors');
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
+const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 app.use(cors());
@@ -10,10 +11,17 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 3001;
 
-// Mapear plantilla a su nombre de archivo físico
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+const supabase = (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY)
+  ? createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+  : null;
+
 const TEMPLATES_DIR = path.join(__dirname, 'templates');
 
-app.post('/render', async (req, res) => {
+// Core Render Helper
+async function generatePngBuffer(reqBody) {
   let browser = null;
   try {
     const {
@@ -27,40 +35,32 @@ app.post('/render', async (req, res) => {
       copy,
       logo_url,
       font = 'Quicksand'
-    } = req.body;
+    } = reqBody;
 
-    // Validación básica
     if (!template || !copy) {
-      return res.status(400).json({ error: 'Faltan parámetros obligatorios: template y copy' });
+      throw new Error('Faltan parámetros obligatorios: template y copy');
     }
 
     const { titulo = '', subtitulo = '', cta = '' } = copy;
-
-    // 1. Cargar archivo HTML de plantilla
-    // Soportar tanto nombres con extensión como alias sin extensión
     const templateName = template.endsWith('.html') ? template : `${template}.html`;
     const templatePath = path.join(TEMPLATES_DIR, templateName);
 
     if (!fs.existsSync(templatePath)) {
-      return res.status(404).json({ error: `La plantilla ${templateName} no existe` });
+      throw new Error(`La plantilla ${templateName} no existe`);
     }
 
     let html = fs.readFileSync(templatePath, 'utf8');
 
-    // 2. Procesar highlight_words en el título
     let processedTitle = titulo;
     if (highlight_words && highlight_words.length > 0) {
       highlight_words.forEach(word => {
         if (!word) return;
-        // Reemplazar la palabra con la clase highlight (insensible a mayúsculas/minúsculas)
         const regex = new RegExp(`\\b(${escapeRegExp(word)})\\b`, 'gi');
         processedTitle = processedTitle.replace(regex, '<span class="highlight">$1</span>');
       });
     }
 
-    // 3. Determinar imagen por defecto (si no viene FOTO_URL en el body)
-    // Se usa un Unsplash representativo según la plantilla/vertical
-    let fotoUrl = req.body.image_url || req.body.foto_url;
+    let fotoUrl = reqBody.image_url || reqBody.foto_url;
     if (!fotoUrl) {
       if (template.includes('vet')) {
         fotoUrl = 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=1080&auto=format&fit=crop';
@@ -71,8 +71,6 @@ app.post('/render', async (req, res) => {
       }
     }
 
-    // 4. Reemplazar placeholders en el HTML
-    // Soporta {{BG}} {{TEXT_COLOR}} {{ACCENT}} {{FONT}} {{TITULO}} {{SUBTITULO}} {{CTA}} {{FOTO_URL}} {{LOGO_URL}}
     html = html
       .replace(/\{\{BG\}\}/g, bg || '#FFFFFF')
       .replace(/\{\{TEXT_COLOR\}\}/g, text_color || '#1A1A1A')
@@ -84,12 +82,9 @@ app.post('/render', async (req, res) => {
       .replace(/\{\{FOTO_URL\}\}/g, fotoUrl)
       .replace(/\{\{LOGO_URL\}\}/g, logo_url || 'https://placehold.co/200x200/png?text=LOGO');
 
-    // 5. Inyectar anulaciones CSS dinámicas (logo_position, title_size y highlight class color)
     let styleOverrides = `
       <style>
-        .highlight {
-          color: ${accent_color || '#E94560'} !important;
-        }
+        .highlight { color: ${accent_color || '#E94560'} !important; }
     `;
 
     if (title_size) {
@@ -99,47 +94,26 @@ app.post('/render', async (req, res) => {
       else if (title_size === 'lg') sizePx = '82px';
       else if (title_size === 'xl') sizePx = '96px';
       
-      styleOverrides += `
-        .titulo {
-          font-size: ${sizePx} !important;
-        }
-      `;
+      styleOverrides += `.titulo { font-size: ${sizePx} !important; }`;
     }
 
     if (logo_position && logo_position !== 'none') {
       styleOverrides += `
         .logo {
-          position: absolute !important;
-          width: auto !important;
-          height: 60px !important;
-          z-index: 999 !important;
-          transform: none !important;
-          margin: 0 !important;
+          position: absolute !important; width: auto !important; height: 60px !important; z-index: 999 !important; transform: none !important; margin: 0 !important;
         }
       `;
-
       switch (logo_position) {
-        case 'top-left':
-          styleOverrides += `.logo { top: 50px !important; left: 50px !important; right: auto !important; bottom: auto !important; }`;
-          break;
-        case 'top-right':
-          styleOverrides += `.logo { top: 50px !important; right: 50px !important; left: auto !important; bottom: auto !important; }`;
-          break;
-        case 'bottom-left':
-          styleOverrides += `.logo { bottom: 50px !important; left: 50px !important; top: auto !important; right: auto !important; }`;
-          break;
-        case 'bottom-right':
-          styleOverrides += `.logo { bottom: 50px !important; right: 50px !important; top: auto !important; left: auto !important; }`;
-          break;
+        case 'top-left': styleOverrides += `.logo { top: 50px !important; left: 50px !important; }`; break;
+        case 'top-right': styleOverrides += `.logo { top: 50px !important; right: 50px !important; }`; break;
+        case 'bottom-left': styleOverrides += `.logo { bottom: 50px !important; left: 50px !important; }`; break;
+        case 'bottom-right': styleOverrides += `.logo { bottom: 50px !important; right: 50px !important; }`; break;
       }
     }
 
     styleOverrides += `</style>`;
-
-    // Insertar las anulaciones de estilo justo antes del cierre de head
     html = html.replace('</head>', `${styleOverrides}</head>`);
 
-    // 6. Lanzar Puppeteer para renderizar
     browser = await puppeteer.launch({
       headless: 'new',
       args: ['--no-sandbox', '--disable-setuid-sandbox']
@@ -147,32 +121,84 @@ app.post('/render', async (req, res) => {
 
     const page = await browser.newPage();
     await page.setViewport({ width: 1080, height: 1080 });
-
-    // Setear contenido HTML
     await page.setContent(html, { waitUntil: 'networkidle0' });
-
-    // Esperar unos ms adicionales por si acaso las imágenes tardan en dibujarse
-    await page.evaluate(async () => {
-      // Forzar que carguen las fuentes web de Google Fonts si se agregaron
-      await document.fonts.ready;
-    });
+    await page.evaluate(async () => { await document.fonts.ready; });
 
     const buffer = await page.screenshot({ type: 'png' });
-    
+    return buffer;
+
+  } finally {
+    if (browser) await browser.close();
+  }
+}
+
+// Endpoint Síncrono Tradicional
+app.post('/render', async (req, res) => {
+  try {
+    const buffer = await generatePngBuffer(req.body);
     res.setHeader('Content-Type', 'image/png');
     res.send(buffer);
-
   } catch (error) {
     console.error('Error durante el renderizado:', error);
     res.status(500).json({ error: 'Error al renderizar el post a PNG', details: error.message });
-  } finally {
-    if (browser) {
-      await browser.close();
-    }
   }
 });
 
-// Helper para escapar caracteres regex
+// Endpoint Asíncrono Desacoplado: Railway renderiza, sube a Supabase Storage y actualiza DB directamente
+app.post('/render-async', async (req, res) => {
+  const { pieza_id, tenant_id } = req.body;
+
+  if (!pieza_id || !tenant_id) {
+    return res.status(400).json({ error: 'Faltan parámetros obligatorios: pieza_id y tenant_id' });
+  }
+
+  // Responder 200 inmediatamente a Vercel/Next.js (< 50ms)
+  res.json({ success: true, status: 'processing', pieza_id });
+
+  // Procesamiento en background en Railway
+  (async () => {
+    try {
+      const buffer = await generatePngBuffer(req.body);
+
+      if (supabase) {
+        const storagePath = `tenants/${tenant_id}/${pieza_id}.png`;
+
+        // Subir PNG a Supabase Storage
+        const { error: uploadErr } = await supabase.storage
+          .from('piezas-bucket')
+          .upload(storagePath, buffer, {
+            contentType: 'image/png',
+            upsert: true
+          });
+
+        if (uploadErr) console.error('Error subiendo a Storage desde Railway:', uploadErr);
+
+        const { data: publicUrlData } = supabase.storage
+          .from('piezas-bucket')
+          .getPublicUrl(storagePath);
+
+        const cdnUrl = publicUrlData?.publicUrl || `data:image/png;base64,${buffer.toString('base64')}`;
+
+        // Actualizar fila en DB public.piezas
+        await supabase
+          .from('piezas')
+          .update({
+            imagen_url: cdnUrl,
+            estado: 'disenada'
+          })
+          .eq('id', pieza_id);
+
+        console.log(`[Railway Render] Pieza ${pieza_id} renderizada y actualizada a 'disenada' exitosamente.`);
+      }
+    } catch (err) {
+      console.error(`[Railway Render Error] Error procesando pieza ${pieza_id}:`, err);
+      if (supabase) {
+        await supabase.from('piezas').update({ estado: 'error' }).eq('id', pieza_id);
+      }
+    }
+  })();
+});
+
 function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
