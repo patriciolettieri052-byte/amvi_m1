@@ -26,23 +26,6 @@ export async function POST(request: Request) {
 
     const client = getSupabaseServerClient(token);
 
-    // B09: Validar tope de 5 piezas por usuario
-    const { count, error: countErr } = await client
-      .from('piezas')
-      .select('*', { count: 'exact', head: true })
-      .eq('tenant_id', user.id);
-
-    if (countErr) {
-      console.error('Error contando piezas:', countErr);
-    }
-
-    if (count !== null && count >= 5) {
-      return NextResponse.json(
-        { error: 'Has alcanzado el límite máximo de 5 piezas de la versión Beta.' },
-        { status: 429 }
-      );
-    }
-
     // Ejecutar Pipeline Runner con el ID seguro del usuario y el token de sesión
     const result = await runPipeline(user.id, pedido, token);
 

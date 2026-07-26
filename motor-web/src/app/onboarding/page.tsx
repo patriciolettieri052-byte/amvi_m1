@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import LogoUploader from '@/components/LogoUploader';
 
 // ADNs de respaldo por defecto para colores/tipografía según rubro
 const DEFAULT_ADN: Record<string, any> = {
@@ -353,25 +354,22 @@ export default function OnboardingPage() {
         {/* PANTALLA 6: Logo */}
         {step === 6 && (
           <div>
-            <h2 style={{ fontSize: '1.5rem', color: '#111827', marginBottom: '8px' }}>Logo de tu marca</h2>
-            <p style={{ color: '#6B7280', fontSize: '0.9rem', marginBottom: '20px' }}>
-              ¿Tenés tu logo a mano? Podés poner el enlace ahora o agregarlo después.
-            </p>
+            <LogoUploader
+              initialLogoUrl={logoUrl}
+              onLogoSelected={(url) => {
+                setLogoUrl(url);
+                setLogoOption('url');
+              }}
+              onSkip={() => {
+                setLogoOption('later');
+                setStep(7);
+              }}
+            />
 
-            <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
-              <button onClick={() => setLogoOption('later')} style={{ flex: 1, padding: '14px', background: logoOption === 'later' ? '#FFF0F2' : '#FFF', border: `2px solid ${logoOption === 'later' ? '#FF4F4F' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}>
-                Lo subo después
-              </button>
-              <button onClick={() => setLogoOption('url')} style={{ flex: 1, padding: '14px', background: logoOption === 'url' ? '#FFF0F2' : '#FFF', border: `2px solid ${logoOption === 'url' ? '#FF4F4F' : '#E5E7EB'}`, borderRadius: '10px', fontWeight: 600, cursor: 'pointer' }}>
-                Poner URL del Logo
-              </button>
-            </div>
-
-            {logoOption === 'url' && (
-              <input type="url" placeholder="https://tu-sitio.com/logo.png" value={logoUrl} onChange={(e) => setLogoUrl(e.target.value)} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #E5E7EB', marginBottom: '20px' }} />
-            )}
-
-            <button onClick={() => setStep(7)} style={{ width: '100%', padding: '14px', background: 'var(--coral, #FF4F4F)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer' }}>
+            <button
+              onClick={() => setStep(7)}
+              style={{ width: '100%', padding: '14px', background: 'var(--coral, #FF4F4F)', color: '#FFF', border: 'none', borderRadius: '12px', fontWeight: 600, cursor: 'pointer', marginTop: '16px' }}
+            >
               Siguiente
             </button>
           </div>

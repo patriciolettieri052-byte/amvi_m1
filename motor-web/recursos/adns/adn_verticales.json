@@ -24,7 +24,33 @@
       "layout tipo folleto de farmacia",
       "saturar de texto informativo",
       "fondos blancos vacios y frios"
-    ]
+    ],
+    "tipos": {
+      "educativo": {
+        "descripcion": "informa o enseña algo al dueño de la mascota",
+        "jerarquia": ["titulo", "foto", "dato", "cta_suave"],
+        "template_preferido": "foto_recortada_bloque",
+        "title_size": "lg",
+        "highlight_words": true,
+        "anti_patterns_extra": ["precio destacado", "urgencia"]
+      },
+      "promo": {
+        "descripcion": "oferta o beneficio con condiciones",
+        "jerarquia": ["beneficio", "precio", "vigencia", "cta"],
+        "template_preferido": "highlight_palabras",
+        "title_size": "xl",
+        "highlight_words": true,
+        "anti_patterns_extra": ["texto largo", "varios beneficios juntos"]
+      },
+      "novedad": {
+        "descripcion": "algo nuevo del negocio: servicio, producto, horario",
+        "jerarquia": ["novedad", "foto", "detalle", "cta"],
+        "template_preferido": "foto_recortada_bloque",
+        "title_size": "lg",
+        "highlight_words": false,
+        "anti_patterns_extra": ["tono de oferta"]
+      }
+    }
   },
   "inmobiliaria": {
     "vertical": "inmobiliaria",
@@ -51,7 +77,33 @@
       "collage de varias fotos chicas",
       "bordes redondeados exagerados o stickers",
       "fuentes sans genericas gordas"
-    ]
+    ],
+    "tipos": {
+      "educativo": {
+        "descripcion": "guía o consejo sobre inversión o mercado inmobiliario",
+        "jerarquia": ["titulo_consejo", "subtitulo", "cita", "cta"],
+        "template_preferido": "split_editorial",
+        "title_size": "lg",
+        "highlight_words": false,
+        "anti_patterns_extra": ["precios", "llamado urgente a comprar"]
+      },
+      "promo": {
+        "descripcion": "oportunidad de venta o alquiler destacado",
+        "jerarquia": ["propiedad", "precio", "caracteristicas", "cta"],
+        "template_preferido": "foto_full_texto_minimo",
+        "title_size": "xl",
+        "highlight_words": true,
+        "anti_patterns_extra": ["texto saturado"]
+      },
+      "novedad": {
+        "descripcion": "nuevo emprendimiento o apertura de oficina",
+        "jerarquia": ["titulo_novedad", "foto", "descripcion", "cta"],
+        "template_preferido": "split_editorial",
+        "title_size": "lg",
+        "highlight_words": false,
+        "anti_patterns_extra": ["gritar oferta"]
+      }
+    }
   },
   "crochet": {
     "vertical": "crochet",
@@ -78,6 +130,70 @@
       "stock generico que no muestre el tejido real",
       "layout tipo ecommerce con precio gritado",
       "fotos oscuras o mal iluminadas que oculten la textura"
-    ]
+    ],
+    "tipos": {
+      "educativo": {
+        "descripcion": "consejos sobre lavado, cuidado de prendas tejidas o patrones",
+        "jerarquia": ["titulo_tip", "foto", "pasos", "cta"],
+        "template_preferido": "producto_centrado_crema",
+        "title_size": "lg",
+        "highlight_words": false,
+        "anti_patterns_extra": ["precios", "venta agresiva"]
+      },
+      "promo": {
+        "descripcion": "oferta especial de temporada o combo tejido",
+        "jerarquia": ["beneficio", "foto_producto", "precio", "cta"],
+        "template_preferido": "titulo_manuscrito",
+        "title_size": "xl",
+        "highlight_words": true,
+        "anti_patterns_extra": ["lenguaje industrial"]
+      },
+      "novedad": {
+        "descripcion": "nuevo lanzamiento de hilo o técnica",
+        "jerarquia": ["novedad", "foto", "historia", "cta"],
+        "template_preferido": "producto_centrado_crema",
+        "title_size": "lg",
+        "highlight_words": false,
+        "anti_patterns_extra": ["texto frio"]
+      }
+    }
+  },
+  "otro": {
+    "vertical": "otro",
+    "concepto_visual": "Limpio, profesional y adaptable. Foco en la claridad del mensaje y la identidad visual de la marca.",
+    "layout_preferido": "layout equilibrado con imagen destacada y jerarquía tipográfica limpia",
+    "jerarquia": ["titulo", "imagen", "subtitulo", "cta"],
+    "densidad_texto": "media",
+    "tipografia_estilo": "sans-serif moderna y limpia",
+    "recursos_graficos": ["bloques de color solido", "highlight suave"],
+    "templates_recomendados": ["foto_recortada_bloque", "highlight_palabras"],
+    "do": ["mantener legibilidad", "usar colores de la boveda"],
+    "anti_patterns": ["saturacion de texto"],
+    "tipos": {
+      "educativo": {
+        "descripcion": "contenido de valor o explicativo",
+        "jerarquia": ["titulo", "foto", "subtitulo", "cta"],
+        "template_preferido": "foto_recortada_bloque",
+        "title_size": "lg",
+        "highlight_words": false,
+        "anti_patterns_extra": []
+      },
+      "promo": {
+        "descripcion": "promocion u oferta comercial",
+        "jerarquia": ["titulo_promo", "oferta", "cta"],
+        "template_preferido": "highlight_palabras",
+        "title_size": "xl",
+        "highlight_words": true,
+        "anti_patterns_extra": []
+      },
+      "novedad": {
+        "descripcion": "anuncio o noticia del negocio",
+        "jerarquia": ["titulo", "foto", "cta"],
+        "template_preferido": "foto_recortada_bloque",
+        "title_size": "lg",
+        "highlight_words": false,
+        "anti_patterns_extra": []
+      }
+    }
   }
 }
