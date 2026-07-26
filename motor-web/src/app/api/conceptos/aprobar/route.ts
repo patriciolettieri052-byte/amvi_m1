@@ -33,15 +33,16 @@ export async function POST(request: Request) {
       .in('id', pieza_ids)
       .eq('tenant_id', user.id);
 
-    // 2. Disparar el diseño y renderizado asíncrono para cada pieza
+    // 2. Disparar el diseño y renderizado asíncrono usando el helper serverless-safe
+    const { runBackgroundJob } = await import('@/lib/render/client');
     pieza_ids.forEach((id: string) => {
-      processPieceDesignAsync({
-        piezaId: id,
-        tenantId: user.id,
-        token
-      }).catch((err) => {
-        console.error(`Error en render asíncrono de pieza ${id}:`, err);
-      });
+      runBackgroundJob(
+        processPieceDesignAsync({
+          piezaId: id,
+          tenantId: user.id,
+          token
+        })
+      );
     });
 
     return NextResponse.json({

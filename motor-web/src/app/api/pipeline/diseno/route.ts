@@ -33,14 +33,15 @@ export async function POST(request: Request) {
       .eq('id', pieza_id)
       .eq('tenant_id', user.id);
 
-    // 2. Disparar el proceso asíncrono sin bloquear la respuesta HTTP
-    processPieceDesignAsync({
-      piezaId: pieza_id,
-      tenantId: user.id,
-      token
-    }).catch((err) => {
-      console.error(`Error en render asíncrono de pieza ${pieza_id}:`, err);
-    });
+    // 2. Disparar el proceso asíncrono usando el helper serverless-safe
+    const { runBackgroundJob } = await import('@/lib/render/client');
+    runBackgroundJob(
+      processPieceDesignAsync({
+        piezaId: pieza_id,
+        tenantId: user.id,
+        token
+      })
+    );
 
     // 3. Responder de inmediato (< 1s)
     return NextResponse.json({

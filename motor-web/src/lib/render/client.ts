@@ -1,6 +1,15 @@
 import { supabase, getSupabaseServerClient } from '../supabase';
 import { ArtResponse, CopyResponse } from '../types';
 
+export function runBackgroundJob(taskPromise: Promise<any>) {
+  try {
+    const { waitUntil } = require('@vercel/functions');
+    waitUntil(taskPromise);
+  } catch (e) {
+    taskPromise.catch((err) => console.error('Error en tarea en segundo plano:', err));
+  }
+}
+
 export async function renderGraphicAndUpload(params: {
   piezaId: string;
   tenantId: string;
